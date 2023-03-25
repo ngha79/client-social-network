@@ -1,0 +1,83 @@
+.leftbar {
+    flex: 1;
+    display: flex;
+    position: sticky;
+    top: 61px;
+    height: calc(100vh - 61px);
+    overflow-y: scroll;
+    position: -webkit-sticky;
+    margin-left: 10px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .container {
+        width: 100%;
+        height: 100%;
+
+        .menu {
+            border-bottom: 1px solid #a2adbb;
+            margin: 0 0 20px;
+            padding: 10px 0;
+
+            .user {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                cursor: pointer;
+                padding: 10px 20px;
+
+                img {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                    object-fit: cover;
+                }
+
+                &:hover {
+                    background-color: #d5d9df;
+                    border-radius: 10px;
+                }
+            }
+
+
+        }
+
+
+
+        .item {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10px 20px;
+
+            .icon {
+                font-size: 30px;
+                color: #5c9dec;
+                margin-right: 10px;
+            }
+
+            p {
+                font-weight: 500;
+                font-size: 15px;
+            }
+
+            &:hover {
+                background-color: #d5d9df;
+                border-radius: 10px;
+            }
+        }
+
+        .shortcuts {
+
+            .title {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        }
+    }
+
+}

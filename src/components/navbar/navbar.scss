@@ -1,0 +1,206 @@
+.navbar {
+    width: 100%;
+    display: flex;
+    height: 60px;
+    box-shadow: 0 1px #ddd;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    z-index: 3;
+    background-color: #fff;
+
+    .content {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-start;
+
+            .logo {
+                margin-left: 20px;
+                font-size: 20px;
+                font-weight: 500;
+                margin-right: 10px;
+
+            }
+
+            .search {
+                padding: 5px 10px;
+                background-color: #e9e9e9;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+
+                .icon {
+                    font-size: 16px;
+                    margin-right: 10px;
+                }
+
+                input {
+                    border: none;
+                    outline: none;
+                    padding: 5px 0;
+                    background-color: #e9e9e9;
+                    font-size: 16px;
+                }
+            }
+        }
+
+        .center {
+            flex: 1;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+
+            .home {
+                padding: 10px 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                &:hover {
+                    background-color: #e9e9e9;
+                    border-radius: 10px;
+                }
+
+                .icon {
+                    font-size: 20px;
+                }
+            }
+        }
+
+        .right {
+            height: 100%;
+            flex: 1;
+            justify-content: flex-end;
+            display: flex;
+            align-items: center;
+
+            .chat {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                margin-right: 20px;
+                padding: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: #e9e9e9;
+                    opacity: 0.8;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+            }
+
+            .notification {
+                font-size: 20px;
+                padding: 10px;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 20px;
+
+                &:hover {
+                    border-radius: 50%;
+                    opacity: 0.8;
+                    cursor: pointer;
+                    background-color: #e9e9e9;
+                }
+            }
+
+            .user {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                margin-right: 20px;
+
+                img {
+                    height: 40px;
+                    width: 40px;
+                    border-radius: 50%;
+                    object-fit: cover;
+
+                    &:hover {
+                        cursor: pointer;
+                        opacity: 0.9;
+                    }
+                }
+
+
+                .featureUser {
+                    position: absolute;
+                    top: 50px;
+                    right: 0;
+                    padding: 20px 30px;
+                    margin-top: 10px;
+                    background-color: #fff;
+                    border-radius: 10px;
+                    z-index: 9999;
+                    border: 1px solid #ddd;
+
+
+                    .feature {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        width: 100%;
+
+                        .toProfile {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 10px;
+                            padding: 5px;
+                            border-radius: 10px;
+                            max-width: 350px;
+
+                            img {
+                                margin-right: 10px;
+                                object-fit: cover;
+                            }
+
+                            span {
+                                font-size: 14px;
+                                font-weight: 500;
+                                width: max-content;
+                            }
+
+                            &:hover {
+                                cursor: pointer;
+                                background-color: #ecebeb;
+                            }
+                        }
+
+                        .logout {
+                            display: flex;
+                            justify-content: center;
+                            padding: 5px;
+                            margin-top: 10px;
+
+
+                            &:hover {
+                                border-radius: 10px;
+                                cursor: pointer;
+                                background-color: #f1f1f1;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
+}

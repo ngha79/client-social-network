@@ -1,0 +1,196 @@
+.createpost {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    width: 100%;
+
+    .container {
+        border: 1px solid #dfdbdb;
+        box-shadow: 2px 2px #dfdbdb;
+        background-color: #fff;
+        border-radius: 10px;
+        width: 100%;
+
+        .user {
+            display: flex;
+            padding: 10px 20px;
+            align-items: center;
+            // justify-content: space-between;
+
+            a {
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                    object-fit: cover;
+                }
+
+            }
+
+            input {
+                height: 40px;
+                width: 100%;
+                border: 1px solid #dad5d5;
+                border-radius: 30px;
+                padding: 5px 10px;
+                background-color: #ece6e6;
+                outline: none;
+            }
+        }
+    }
+
+    .create {
+        width: 100vw;
+        position: fixed;
+        height: 100vh;
+        background-color: rgba($color: #b6adad, $alpha: 0.5);
+        left: -9px;
+        top: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .contentCreate {
+            background-color: #ffffff;
+            margin-left: 5px;
+            min-width: 600px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+
+            .title {
+                text-align: center;
+                padding: 20px 0;
+                border-bottom: 1px solid #dbdbdb;
+                position: relative;
+
+                .closetag {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    font-size: 26px;
+                    margin: 5px;
+                    border-radius: 50%;
+
+                    &:hover {
+                        opacity: 0.7;
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .user {
+                padding: 10px;
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start;
+                margin-bottom: 10px;
+
+                img {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                    object-fit: cover;
+                }
+
+
+                span {
+                    font-size: 16px;
+                    font-weight: 500;
+                }
+            }
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+
+                .text {
+                    margin: 10px 10px 20px;
+                    padding: 0 10px;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                    height: fit-content;
+                    border: none;
+                    outline: none;
+                    font-size: 16px;
+                    font-weight: 500;
+                    background-color: #ffffff;
+                }
+
+                .upload {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    margin-top: 20px;
+
+                    form {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        position: relative;
+
+                        .preview {
+                            display: flex;
+                            // justify-content: center;
+                            // align-items: center;
+                            border: 2px dashed #1275cf;
+                            height: 300px;
+                            width: 100%;
+                            margin: 0 20px 30px;
+                            cursor: pointer;
+                            border-radius: 5px;
+                            // flex-wrap: wrap;
+                            overflow: hidden;
+                            padding: 10px;
+                            gap: 10px;
+
+
+                            img {
+                                gap: 10px;
+                                object-fit: cover;
+                            }
+
+                        }
+
+                        .delete {
+                            position: absolute;
+                            top: 0;
+                            right: 20px;
+                            font-size: 26px;
+
+                            &:hover {
+                                opacity: 0.7;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+            }
+
+            button {
+                border: none;
+                padding: 10px 0;
+                margin: 10px;
+                border-radius: 10px;
+                background-color: #1275cf;
+                color: #fff;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: 700;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+            }
+        }
+    }
+}

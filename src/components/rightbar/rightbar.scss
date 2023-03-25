@@ -1,0 +1,93 @@
+.rightbar {
+    display: flex;
+    justify-content: flex-start;
+    flex: 1;
+    position: sticky;
+    top: 61px;
+    height: calc(100vh - 61px);
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    .container {
+        padding: 20px 0;
+        width: 100%;
+
+        .item {
+
+            span {
+                font-size: 16px;
+            }
+
+            .user {
+                cursor: pointer;
+                display: flex;
+                margin: 10px 0;
+                padding: 0 10px;
+                border-radius: 5px;
+                align-items: center;
+                justify-content: space-between;
+
+                &:hover {
+                    background-color: #b8c6d8;
+                }
+
+                .userInfo {
+                    display: flex;
+                    align-items: center;
+                    padding: 10px 0;
+                    position: relative;
+
+                    .image {
+                        margin-right: 10px;
+                        width: 36px;
+                        height: 36px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+
+                    p {
+                        font-size: 15px;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+
+                    .online {
+                        position: absolute;
+                        width: 12px;
+                        height: 12px;
+                        border-radius: 50%;
+                        background-color: limegreen;
+                        bottom: 10px;
+                        left: 26px;
+                    }
+                }
+
+                .refuse-invite {
+                    margin-right: 10px;
+                    background-color: #dd2c4a;
+                }
+
+                button {
+                    padding: 10px;
+                    border-radius: 5px;
+                    border: none;
+                    background-color: #1b74e4;
+                    color: #fff;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                .unfollow {
+                    background-color: #dd2c4a;
+                }
+            }
+        }
+    }
+}

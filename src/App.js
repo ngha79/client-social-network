@@ -1,24 +1,83 @@
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch, useSelector } from "react-redux";
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
+import Chat from "./pages/chat/Chat";
+import Profile from "./pages/profile/Profile";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
+import NotFound from "./pages/NotFound/NotFound";
+import NavBar from "./components/navbar/NavBar";
+import Diff from "./pages/outlet/Diff";
+import ForgotPassword from "./pages/forgot-password/ForgotPassword";
+import ResetPassword from "./pages/reset-password/ResetPassword";
 
 function App() {
+  const { user } = useSelector((state) => state.auth);
+
+  const ProtectedRoute = ({ children }) => {
+    if (!user) {
+      return <Navigate to={"/login"} />;
+    }
+    return children;
+  };
+
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute>
+          <Diff />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "/",
+          element: <Home />,
+        },
+        {
+          path: "/profile/:userId",
+          element: <Profile />,
+        },
+        {
+          path: "/message",
+          element: <Chat />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
+    {
+      path: "/reset-password/*",
+      element: <ResetPassword />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
+  ]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </>
   );
 }
 
