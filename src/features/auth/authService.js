@@ -1,12 +1,12 @@
 import axiosClient from "../axiosClient";
 
-const API_URI = "/auth";
+const API_URI = `${process.env.REACT_APP_API_URL}/auth`;
 
 const login = async (userData) => {
   const response = await axiosClient.post(`${API_URI}/login`, userData);
-
   if (response.data) {
     localStorage.setItem("user", JSON.stringify(response.data));
+    localStorage.setItem("token", response.data.token);
     localStorage.setItem("refreshtoken", response.data.refreshToken);
   }
   return response.data;
