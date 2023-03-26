@@ -27,7 +27,7 @@ axiosClient.interceptors.response.use(
     axios.interceptors.response.eject(axiosClient.interceptors);
     return axios
       .request({
-        url: `/auth/refreshtoken`,
+        url: `${process.env.REACT_APP_API_URL}/auth/refreshtoken`,
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -35,13 +35,14 @@ axiosClient.interceptors.response.use(
         data: { refreshToken: refreshToken },
       })
       .then((token) => {
+        console.log(token);
         localStorage.setItem("token", token.data);
         error.response.config.headers["Authorization"] = "Bearer " + token.data;
         return axios(error.response.config);
       })
       .catch((error) => {
         localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("refreshtoken");
         localStorage.removeItem("user");
         return Promise.reject(error);
       })
