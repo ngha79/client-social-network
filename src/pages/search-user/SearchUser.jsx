@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./searchuser.scss";
 import { useSelector } from "react-redux";
 
@@ -13,10 +14,12 @@ const SearchUser = () => {
         <div className="result-search">
           {searchPeople &&
             searchPeople.map((user) => (
-              <div className="user">
-                <img src={user.avatar.url} alt="" />
-                <span>{user.name}</span>
-              </div>
+              <Link to={`/profile/${user._id}`}>
+                <div className="user">
+                  <img src={user.avatar.url} alt="" />
+                  <span>{user.name}</span>
+                </div>
+              </Link>
             ))}
 
           {searchPeople && searchPeople.length === 0 && (
