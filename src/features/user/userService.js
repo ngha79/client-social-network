@@ -2,6 +2,14 @@ import axiosClient from "../axiosClient";
 
 const API_URI = "/user";
 
+const getUserByName = async (name) => {
+  const response = await axiosClient.request({
+    method: "GET",
+    url: `${API_URI}/get-user-by-name/${name}`,
+  });
+  return response.data;
+};
+
 const getUserById = async (id) => {
   const response = await axiosClient.request({
     method: "GET",
@@ -83,6 +91,7 @@ const allInviteFriend = async (userId) => {
 };
 
 const userService = {
+  getUserByName,
   getUserById,
   getUserIsNotFriend,
   addFriend,

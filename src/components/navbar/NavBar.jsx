@@ -2,15 +2,18 @@ import { Link, useNavigate } from "react-router-dom";
 import "./navbar.scss";
 import { FaSearch, FaFacebookMessenger, FaBell, FaHome } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { logout, reset } from "../../features/auth/authSlice";
 import { getAllChat } from "../../features/chat/chatSlice";
+import { getUserByName } from "../../features/user/userSlice";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { searchPeople } = useSelector((state) => state.user);
   const [openFeature, setOpenFeature] = useState(false);
+  const [searchUser, setSearchUser] = useState("");
 
   const featureUser = () => {
     setOpenFeature(!openFeature);
@@ -22,6 +25,15 @@ const NavBar = () => {
     dispatch(reset());
     navigate("/login");
   };
+
+  const handleSearchUser = (e) => {
+    e.preventDefault();
+    if (searchUser.length !== 0) {
+      dispatch(getUserByName(searchUser));
+      navigate("/search-people");
+    }
+  };
+
   return (
     <div className="navbar">
       <div className="content">
@@ -31,7 +43,13 @@ const NavBar = () => {
           </div>
           <div className="search">
             <FaSearch className="icon" />
-            <input type="text" />
+            <form onSubmit={handleSearchUser}>
+              <input
+                type="text"
+                placeholder="Tìm kiếm mọi người"
+                onChange={(e) => setSearchUser(e.target.value)}
+              />
+            </form>
           </div>
         </div>
         <div className="center">
@@ -47,9 +65,9 @@ const NavBar = () => {
               <FaFacebookMessenger className="icon" />
             </div>
           </Link>
-          <div className="notification">
+          {/* <div className="notification">
             <FaBell className="icon" />
-          </div>
+          </div> */}
 
           <div className="user">
             <img src={user?.user.avatar.url} alt="" onClick={featureUser} />

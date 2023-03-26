@@ -60,8 +60,6 @@ const Post = ({ post }) => {
     return totalComment;
   };
 
-  console.log(post.image);
-
   return (
     <div className="post">
       <div className="container">

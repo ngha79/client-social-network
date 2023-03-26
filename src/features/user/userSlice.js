@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import userService from "./userService";
 
 const initialState = {
+  searchPeople: [],
   people: [],
   friends: [],
   sendInvite: [],
@@ -11,6 +12,23 @@ const initialState = {
   isError: false,
   message: "",
 };
+
+export const getUserByName = createAsyncThunk(
+  "user/getUserByName",
+  async (formData, thunkAPI) => {
+    try {
+      return await userService.getUserByName(formData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const getUserIsNotFriend = createAsyncThunk(
   "user/userIsNotfriend",
@@ -178,6 +196,9 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(getUserByName.fulfilled, (state, action) => {
+        state.searchPeople = action.payload;
+      })
       .addCase(getUserIsNotFriend.fulfilled, (state, action) => {
         state.people = action.payload;
       })
