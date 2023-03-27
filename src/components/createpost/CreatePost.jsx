@@ -52,8 +52,10 @@ const CreatePost = () => {
     e.preventDefault();
 
     const formData = new FormData();
-    for (let i = 0; i < image.length; i++) {
-      formData.append("image", image[i]);
+    if (image) {
+      for (let i = 0; i < image.length; i++) {
+        formData.append("image", image[i]);
+      }
     }
     formData.append("body", post);
 
