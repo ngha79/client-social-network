@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import chatService from "./chatService";
+import { socket } from "../../utils/socket";
 
 const initialState = {
   chat: [],
   updateChatCurrent: {},
   messages: [],
   messageAction: {},
+  group: {},
   messageDel: {},
   messageLike: {},
   messageUnLike: {},
@@ -338,7 +340,6 @@ export const chatSlice = createSlice({
     },
 
     exitChatCurrent: (state, action) => {
-      console.log(action.payload);
       const allChats = state.chat.map((chat) => {
         if (chat._id === action.payload._id) {
           return action.payload;
@@ -348,6 +349,9 @@ export const chatSlice = createSlice({
       state.chat = allChats;
       state.updateChatCurrent = action.payload;
     },
+    addGroup: (state, action) => {
+      state.chat.push(action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -355,6 +359,7 @@ export const chatSlice = createSlice({
         state.chat = action.payload;
       })
       .addCase(createChat.fulfilled, (state, action) => {
+        socket.emit("create group chat", action.payload);
         state.chat.push(action.payload);
       })
       .addCase(getMessages.fulfilled, (state, action) => {
@@ -366,13 +371,18 @@ export const chatSlice = createSlice({
       .addCase(createMessage.fulfilled, (state, action) => {
         if (action.payload.newChat) {
           state.chat.push(action.payload.newChat);
-          state.messageNewChat.push(action.payload.newMessage);
+          state.messages.push(action.payload.newMessage);
           state.updateChatCurrent = action.payload.newChat;
+          socket.emit("new chat from user", action.payload.newChat);
+          socket.emit("joinRoom", { chatId: action.payload.newChat._id });
         } else {
           state.messages.push(action.payload.newMessage);
-          state.messageAction = action.payload.newMessage;
           state.messageNewChat = [];
         }
+        socket.emit("addMessage", {
+          msg: action.payload.newMessage,
+          chatId: action.payload.newMessage.chat,
+        });
       })
       .addCase(deleteMessage.fulfilled, (state, action) => {
         const update = state.messages.map((message) => {
@@ -392,7 +402,10 @@ export const chatSlice = createSlice({
           return message;
         });
         state.messages = update;
-        state.messageLike = action.payload;
+        socket.emit("likeMessage", {
+          msg: action.payload,
+          chatId: action.payload.chat,
+        });
       })
       .addCase(removeLikeMessage.fulfilled, (state, action) => {
         const update = state.messages.map((message) => {
@@ -402,7 +415,10 @@ export const chatSlice = createSlice({
           return message;
         });
         state.messages = update;
-        state.messageUnLike = action.payload;
+        socket.emit("unlikeMessage", {
+          msg: action.payload,
+          chatId: action.payload.chat,
+        });
       })
       .addCase(kickMemberChat.fulfilled, (state, action) => {
         const update = state.chat.map((chat) => {
@@ -413,8 +429,12 @@ export const chatSlice = createSlice({
         });
         state.chat = update;
         state.updateChatCurrent = action.payload.chat;
-        state.kickMember = action.payload.chat;
-        state.memberKick = action.payload.memberId;
+        console.log(action.payload);
+        socket.emit("kickMember", {
+          msg: action.payload.chat,
+          chatId: action.payload.chat._id,
+          memberId: action.payload.memberId,
+        });
       })
       .addCase(addMemberChat.fulfilled, (state, action) => {
         const update = state.chat.map((chat) => {
@@ -425,8 +445,11 @@ export const chatSlice = createSlice({
         });
         state.chat = update;
         state.updateChatCurrent = action.payload.chat;
-        state.addMember = action.payload.chat;
-        state.memberAdd = action.payload.memberId;
+        socket.emit("addMember", {
+          msg: action.payload.chat,
+          chatId: action.payload.chat._id,
+          memberId: action.payload.memberId,
+        });
       })
       .addCase(outChat.fulfilled, (state, action) => {
         const update = state.chat.filter(
@@ -434,7 +457,10 @@ export const chatSlice = createSlice({
         );
         state.chat = update;
         state.updateChatCurrent = {};
-        state.exitChat = action.payload;
+        socket.emit("exitChat", {
+          msg: action.payload,
+          chatId: action.payload._id,
+        });
       })
       .addCase(passLeaderChat.fulfilled, (state, action) => {
         const update = state.chat.map((chat) => {
@@ -445,7 +471,10 @@ export const chatSlice = createSlice({
         });
         state.chat = update;
         state.updateChatCurrent = action.payload;
-        state.passLeader = action.payload;
+        socket.emit("passLeader", {
+          msg: action.payload,
+          chatId: action.payload._id,
+        });
       })
       .addCase(deleteChat.fulfilled, (state, action) => {
         const update = state.chat.filter(
@@ -453,7 +482,10 @@ export const chatSlice = createSlice({
         );
         state.chat = update;
         state.updateChatCurrent = {};
-        state.deleteOrDropChat = action.payload;
+        socket.emit("deleteChat", {
+          msg: action.payload,
+          chatId: action.payload._id,
+        });
       });
   },
 });
@@ -475,6 +507,7 @@ export const {
   updateChatAfterKick,
   exitChatCurrent,
   updateChatAfterAddMember,
+  addGroup,
 } = chatSlice.actions;
 export const allMessages = (state) => state.chat.messages;
 export default chatSlice.reducer;

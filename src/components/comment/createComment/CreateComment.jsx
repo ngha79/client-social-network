@@ -19,7 +19,6 @@ const CreateComment = () => {
     if (e.target.files) {
       setFile(e.target.files[0]);
       const fileArray = URL.createObjectURL(e.target.files[0]);
-      console.log(e.target.files);
       setImage(fileArray);
       URL.revokeObjectURL(e.target.files);
     }

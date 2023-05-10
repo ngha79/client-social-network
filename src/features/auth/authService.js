@@ -45,7 +45,6 @@ const resetPassword = async ({ data, token }) => {
     `${API_URI}/reset-password/${token}`,
     data
   );
-  console.log(response.data);
   return response.data;
 };
 const authService = {

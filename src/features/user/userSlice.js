@@ -1,5 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import userService from "./userService";
+import { socket } from "../../utils/socket";
+
+const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
   searchPeople: [],
@@ -193,6 +196,61 @@ export const userSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
+    addFriendInvited: (state, action) => {
+      const newPeople = state.people.filter(
+        (user) => user._id !== action.payload._id
+      );
+      state.people = newPeople;
+      const newInvited = state.invitedFriends.filter(
+        (user) => user._id !== action.payload._id
+      );
+      newInvited.push(action.payload);
+      state.invitedFriends = newInvited;
+    },
+    acceptFriendInvited: (state, action) => {
+      const newInvite = state.sendInvite.filter(
+        (user) => user._id !== action.payload._id
+      );
+      state.sendInvite = newInvite;
+      const newFriend = state.friends.filter(
+        (user) => user._id !== action.payload._id
+      );
+      newFriend.push(action.payload);
+      state.friends = newFriend;
+    },
+    unfriend: (state, action) => {
+      const newFriends = state.friends.filter(
+        (user) => user._id !== action.payload._id
+      );
+      state.friends = newFriends;
+      const newPeople = state.people.filter(
+        (user) => user._id !== action.payload._id
+      );
+      newPeople.push(action.payload);
+      state.people = newPeople;
+    },
+    deleteSendInvitedFriend: (state, action) => {
+      const newFriends = state.invitedFriends.filter(
+        (user) => user._id !== action.payload._id
+      );
+      state.invitedFriends = newFriends;
+      const newPeople = state.people.filter(
+        (user) => user._id !== action.payload._id
+      );
+      newPeople.push(action.payload);
+      state.people = newPeople;
+    },
+    refusedInvitedFriend: (state, action) => {
+      const newFriends = state.sendInvite.filter(
+        (user) => user._id !== action.payload._id
+      );
+      state.sendInvite = newFriends;
+      const newPeople = state.people.filter(
+        (user) => user._id !== action.payload._id
+      );
+      newPeople.push(action.payload);
+      state.people = newPeople;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -216,37 +274,50 @@ export const userSlice = createSlice({
           (user) => user._id !== action.payload._id
         );
         state.people = newPeople;
-        const newFriends = state.sendInvite.concat(action.payload);
-        state.sendInvite = newFriends;
+        state.sendInvite.push(action.payload);
+        socket.emit("add friend", user.user, action.payload._id);
       })
       .addCase(acceptFriend.fulfilled, (state, action) => {
         const newInvite = state.invitedFriends.filter(
           (user) => user._id !== action.payload._id
         );
         state.invitedFriends = newInvite;
-        const newFriends = state.friends.concat(action.payload);
-        state.friends = newFriends;
+        state.friends.push(action.payload);
+        socket.emit("accept friend", user.user, action.payload._id);
       })
       .addCase(deleteFriend.fulfilled, (state, action) => {
         const newFriends = state.friends.filter(
           (user) => user._id !== action.payload._id
         );
         state.friends = newFriends;
+        state.people.push(action.payload);
+        socket.emit("unfriend", user.user, action.payload._id);
       })
       .addCase(deleteSendFriend.fulfilled, (state, action) => {
         const newFriends = state.sendInvite.filter(
           (user) => user._id !== action.payload._id
         );
         state.sendInvite = newFriends;
+        state.people.push(action.payload);
+        socket.emit("delete send friend", user.user, action.payload._id);
       })
       .addCase(deleteInvitedFriend.fulfilled, (state, action) => {
         const newFriends = state.invitedFriends.filter(
           (user) => user._id !== action.payload._id
         );
         state.invitedFriends = newFriends;
+        state.people.push(action.payload);
+        socket.emit("refuse invited friend", user.user, action.payload._id);
       });
   },
 });
 
-export const { reset } = userSlice.actions;
+export const {
+  reset,
+  addFriendInvited,
+  acceptFriendInvited,
+  unfriend,
+  deleteSendInvitedFriend,
+  refusedInvitedFriend,
+} = userSlice.actions;
 export default userSlice.reducer;

@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "proxy": "https://mernappsocialmedia.onrender.com",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -16,6 +16,7 @@
     "mdb-react-ui-kit": "^5.1.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.41",
+    "peerjs": "^1.4.7",
     "query-string": "^8.1.0",
     "randomstring": "^1.2.3",
     "react": "^18.2.0",

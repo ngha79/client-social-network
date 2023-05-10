@@ -60,7 +60,6 @@ const removeCommentPost = async (data) => {
     method: "DELETE",
     url: `${API_URL_COMMENT}/removecomment/${data.postid}/${data.commentId}`,
   });
-  console.log(response.data);
   return response.data;
 };
 

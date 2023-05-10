@@ -35,7 +35,6 @@ axiosClient.interceptors.response.use(
         data: { refreshToken: refreshToken },
       })
       .then((token) => {
-        console.log(token);
         localStorage.setItem("token", token.data);
         error.response.config.headers["Authorization"] = "Bearer " + token.data;
         return axios(error.response.config);

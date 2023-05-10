@@ -25,7 +25,6 @@ const createChat = async (formData) => {
     url: `${API_URI_CHAT}/`,
     data: formData,
   });
-  console.log(response.data);
   return response.data;
 };
 

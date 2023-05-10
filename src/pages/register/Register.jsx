@@ -59,7 +59,6 @@ const Register = () => {
       dateOfBirth,
       avatar,
     };
-    console.log(userData);
     dispatch(register(userData));
   };
 

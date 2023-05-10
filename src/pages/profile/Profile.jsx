@@ -30,9 +30,7 @@ const Profile = () => {
   );
   const userId = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [openFollowing, setOpenFollowing] = useState(false);
-
   const allPosts = () => {
     const allpost = posts.filter((post) => post.author._id === userId.userId);
     return allpost;
@@ -40,7 +38,7 @@ const Profile = () => {
 
   useEffect(() => {
     dispatch(getUserById(userId.userId));
-  }, [dispatch, navigate, friends, sendInvite, invitedFriends]);
+  }, [userId]);
 
   const isFriend = () => {
     if (friends.some((user) => user._id === profileUser._id)) {
@@ -78,13 +76,11 @@ const Profile = () => {
                 {profileUser?.friends && profileUser?.friends.length} Bạn bè
               </div>
             </div>
-            {user && user?.user._id === userId.userId && (
+            {user && user?.user._id === userId.userId ? (
               <div className="update-profile">
                 <button>Update Profile</button>
               </div>
-            )}
-
-            {profileUser &&
+            ) : (
               user.user._id !== profileUser._id &&
               (isFriend() ? (
                 <div className="add-friend">
@@ -151,7 +147,8 @@ const Profile = () => {
                     </>
                   )}
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </div>
         <div className="post-info">

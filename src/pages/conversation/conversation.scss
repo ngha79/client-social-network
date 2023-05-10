@@ -1,0 +1,78 @@
+.conversation {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    color: white;
+    position: relative;
+
+    .screen-user {
+        height: 100%;
+    }
+
+    @media screen and (max-width: 600px) {
+        .screen-small {
+            position: absolute;
+            bottom: 100px;
+            left: 30px;
+            width: 280px;
+            height: 170px;
+            border-radius: 6px;
+            background: #d6c5c5;
+            color: black;
+            padding: 15px;
+        }
+    }
+
+    @media screen and (min-width: 600px) {
+        .screen-small {
+            position: absolute;
+            top: 60px;
+            left: 60px;
+            width: 280px;
+            height: 180px;
+            border-radius: 6px;
+            background: white;
+            color: black;
+        }
+    }
+
+    .footer-conversation {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 4;
+        background: rgb(226, 217, 217);
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 80px;
+        gap: 40px;
+
+        .icon {
+            padding: 10px;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background-color: #2198e7;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #4990c0;
+            }
+        }
+
+        .cancel {
+            background-color: #d43a3a;
+
+            &:hover {
+                background-color: #d36262;
+            }
+        }
+    }
+}

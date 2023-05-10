@@ -396,7 +396,7 @@ export const postsSlice = createSlice({
       })
       .addCase(addReplyComment.fulfilled, (state, action) => {
         const updatePosts = state.posts.map((post) => {
-          if (post._id === action.payload.post._id) {
+          if (post._id === action.payload.post) {
             post.comments.map((comment) => {
               if (comment._id === action.payload._id) {
                 comment.reply = action.payload.reply;
@@ -410,7 +410,7 @@ export const postsSlice = createSlice({
       })
       .addCase(deleteReplyComment.fulfilled, (state, action) => {
         const updatePosts = state.posts.map((post) => {
-          if (post._id === action.payload.post._id) {
+          if (post._id === action.payload.post) {
             post.comments.map((comment) => {
               if (comment._id === action.payload._id) {
                 comment.reply = action.payload.reply;
@@ -424,7 +424,7 @@ export const postsSlice = createSlice({
       })
       .addCase(likeReplyComment.fulfilled, (state, action) => {
         const updatePosts = state.posts.map((post) => {
-          if (post._id === action.payload.post._id) {
+          if (post._id === action.payload.post) {
             post.comments.map((comment) => {
               if (comment._id === action.payload._id) {
                 comment.reply = action.payload.reply;
@@ -438,7 +438,7 @@ export const postsSlice = createSlice({
       })
       .addCase(removeLikeReplyComment.fulfilled, (state, action) => {
         const updatePosts = state.posts.map((post) => {
-          if (post._id === action.payload.post._id) {
+          if (post._id === action.payload.post) {
             post.comments.map((comment) => {
               if (comment._id === action.payload._id) {
                 comment.reply = action.payload.reply;

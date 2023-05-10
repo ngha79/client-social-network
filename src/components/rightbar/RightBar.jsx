@@ -3,13 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   acceptFriend,
+  acceptFriendInvited,
   addFriend,
+  addFriendInvited,
   allFriend,
   deleteInvitedFriend,
   deleteSendFriend,
+  deleteSendInvitedFriend,
   getUserIsNotFriend,
+  refusedInvitedFriend,
+  unfriend,
 } from "../../features/user/userSlice";
 import "./rightbar.scss";
+import { socket } from "../../utils/socket";
 
 const RightBar = () => {
   const { user } = useSelector((state) => state.auth);
@@ -18,9 +24,23 @@ const RightBar = () => {
   );
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(allFriend());
-  // }, [dispatch]);
+  useEffect(() => {
+    socket.on("add friend invited", (friend) => {
+      dispatch(addFriendInvited(friend));
+    });
+    socket.on("send unfriend invited", (friend) => {
+      dispatch(unfriend(friend));
+    });
+    socket.on("accept invited friend", (friend) => {
+      dispatch(acceptFriendInvited(friend));
+    });
+    socket.on("delete send invited friend", (friend) => {
+      dispatch(deleteSendInvitedFriend(friend));
+    });
+    socket.on("delete refused invited friend", (friend) => {
+      dispatch(refusedInvitedFriend(friend));
+    });
+  }, []);
   return (
     <div className="rightbar">
       <div className="container">
@@ -86,7 +106,7 @@ const RightBar = () => {
                     </div>
                   </Link>
                   <button onClick={() => dispatch(deleteSendFriend(user._id))}>
-                    Xóa lời mời
+                    Hủy
                   </button>
                 </div>
               ))}

@@ -31,7 +31,6 @@ const ResetPassword = () => {
     const userData = {
       password,
     };
-    console.log(token[1]);
 
     dispatch(resetPassword({ data: userData, token: token[1] }));
   };

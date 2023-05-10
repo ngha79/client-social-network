@@ -2,9 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./chatbox.scss";
 import InputEmoji from "react-input-emoji";
-import { BsFillImageFill, BsThreeDots } from "react-icons/bs";
-import { BiLike, BiLogOut, BiUserMinus } from "react-icons/bi";
-import { AiFillInfoCircle, AiOutlineUserAdd } from "react-icons/ai";
+import { BsFillImageFill, BsTelephoneFill, BsThreeDots } from "react-icons/bs";
+import { BiCloset, BiLike, BiLogOut, BiUserMinus } from "react-icons/bi";
+import {
+  AiFillBackward,
+  AiFillInfoCircle,
+  AiOutlineArrowLeft,
+  AiOutlineClose,
+  AiOutlineUserAdd,
+} from "react-icons/ai";
 import { HiUserGroup, HiUser } from "react-icons/hi";
 import { MdGroupOff } from "react-icons/md";
 import { RiUserShared2Line } from "react-icons/ri";
@@ -38,11 +44,19 @@ import {
   updateChatAfterKick,
   updateChatAfterAddMember,
   exitChatCurrent,
+  addGroup,
 } from "../../features/chat/chatSlice";
 import { socket } from "../../utils/socket";
 import { Link, useLocation } from "react-router-dom";
 
-const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
+const ChatBox = ({
+  chat,
+  user,
+  setCurrentChat,
+  profileUser,
+  isMobile,
+  setChatMobile,
+}) => {
   const {
     messages,
     messageAction,
@@ -101,6 +115,7 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
   const handleCreateMessage = (e) => {
     e.preventDefault();
     const formData = new FormData();
+    if (newMessage.length === 0 && image.length === 0) return;
     if (newMessage) {
       formData.append("message", newMessage);
     }
@@ -138,12 +153,12 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
     socket.on("updateMessageLike", (chat) => {
       dispatch(sendMessageLike(chat.like));
     });
-    socket.on("updateMessageLike", (chat) => {
+    socket.on("updateMessageUnLike", (chat) => {
       dispatch(sendMessageUnLike(chat.unlike));
     });
     socket.on("passLeaderSend", (chat) => {
+      console.log(chat);
       dispatch(updateChatSend(chat.updateChat));
-      dispatch(updateChat());
     });
     socket.on("addMemberSend", (chat) => {
       if (chat.memberId.some((member) => member === user._id.toString())) {
@@ -154,6 +169,7 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
       dispatch(updateChat());
     });
     socket.on("deleteChatSend", (chat) => {
+      console.log(chat);
       dispatch(deleteChatCurrent(chat.updateChat));
       setCurrentChat();
       dispatch(updateChat());
@@ -170,6 +186,9 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
     socket.on("exitChatSend", (chat) => {
       dispatch(exitChatCurrent(chat.updateChat));
       dispatch(updateChat());
+    });
+    socket.on("create group", (group) => {
+      dispatch(addGroup(group));
     });
   }, []);
 
@@ -204,56 +223,56 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
     }
   };
 
-  useEffect(() => {
-    socket.emit("likeMessage", {
-      msg: messageLike,
-      chatId: messageLike.chat,
-    });
-  }, [messageLike]);
+  // useEffect(() => {
+  //   socket.emit("likeMessage", {
+  //     msg: messageLike,
+  //     chatId: messageLike.chat,
+  //   });
+  // }, [messageLike]);
 
-  useEffect(() => {
-    socket.emit("unlikeMessage", {
-      msg: messageUnLike,
-      chatId: messageUnLike.chat,
-    });
-  }, [messageUnLike]);
+  // useEffect(() => {
+  //   socket.emit("unlikeMessage", {
+  //     msg: messageUnLike,
+  //     chatId: messageUnLike.chat,
+  //   });
+  // }, [messageUnLike]);
 
-  useEffect(() => {
-    socket.emit("passLeader", {
-      msg: passLeader,
-      chatId: passLeader._id,
-    });
-  }, [passLeader]);
+  // useEffect(() => {
+  //   socket.emit("passLeader", {
+  //     msg: passLeader,
+  //     chatId: passLeader._id,
+  //   });
+  // }, [passLeader]);
 
-  useEffect(() => {
-    socket.emit("kickMember", {
-      msg: kickMember,
-      chatId: kickMember._id,
-      memberKick: memberKick,
-    });
-  }, [kickMember]);
+  // useEffect(() => {
+  //   socket.emit("kickMember", {
+  //     msg: kickMember,
+  //     chatId: kickMember._id,
+  //     memberKick: memberKick,
+  //   });
+  // }, [kickMember]);
 
-  useEffect(() => {
-    socket.emit("addMember", {
-      msg: addMember,
-      chatId: addMember._id,
-      memberId: memberAdd,
-    });
-  }, [addMember]);
+  // useEffect(() => {
+  //   socket.emit("addMember", {
+  //     msg: addMember,
+  //     chatId: addMember._id,
+  //     memberId: memberAdd,
+  //   });
+  // }, [addMember]);
 
-  useEffect(() => {
-    socket.emit("deleteChat", {
-      msg: deleteOrDropChat,
-      chatId: deleteOrDropChat._id,
-    });
-  }, [deleteOrDropChat]);
+  // useEffect(() => {
+  //   socket.emit("deleteChat", {
+  //     msg: deleteOrDropChat,
+  //     chatId: deleteOrDropChat._id,
+  //   });
+  // }, [deleteOrDropChat]);
 
-  useEffect(() => {
-    socket.emit("exitChat", {
-      msg: exitChat,
-      chatId: exitChat._id,
-    });
-  }, [exitChat]);
+  // useEffect(() => {
+  //   socket.emit("exitChat", {
+  //     msg: exitChat,
+  //     chatId: exitChat._id,
+  //   });
+  // }, [exitChat]);
 
   const allUser = chat?.members.filter((member) => member._id !== user._id);
 
@@ -315,178 +334,32 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
     setImage([]);
   };
 
+  if (profileUser && !chat) {
+    function setchat() {
+      return () => setChatMobile(true);
+    }
+    setchat();
+  }
   return (
     <div className="chatBox">
       {profileUser && !chat && (
-        <div className="chat-content">
-          <div className="chat-header">
-            <div className="chat-list">
-              <div className="follower">
-                <img src={profileUser?.avatar?.url} alt="" />
-                <div className="name">
-                  <span>{profileUser?.name}</span>
-                </div>
-              </div>
-              <div
-                className="feature-chat"
-                onClick={() => setOpenMore(!openMore)}
-              >
-                <AiFillInfoCircle />
-              </div>
-            </div>
-            <hr
-              style={{
-                width: "95%",
-                border: "0.1px solid #ececec",
-                marginTop: "20px",
-              }}
-            />
-          </div>
-
-          <div className="chatBody">
-            <div className="chatBody">
-              {messageNewChat &&
-                messageNewChat.map((mess, index) => (
-                  <div
-                    key={mess?._id}
-                    className={
-                      mess?.senderId._id === user._id
-                        ? "showMessage owns"
-                        : "showMessage"
-                    }
-                  >
-                    {mess?.senderId._id !== user._id && (
-                      <div className="infoUser">
-                        <img src={mess?.senderId?.avatar?.url} alt="" />
-                      </div>
-                    )}
-                    <div
-                      ref={scroll}
-                      className={
-                        mess?.senderId._id === user._id
-                          ? "message own"
-                          : "message"
-                      }
-                      key={index}
-                    >
-                      {mess?.senderId._id !== user._id && (
-                        <span className="nameUserSend">
-                          {mess.senderId.name}
-                        </span>
-                      )}
-
-                      {mess && mess.isDeleted ? (
-                        <>
-                          <div>Tin nhắn đã bị xóa</div>
-                        </>
-                      ) : (
-                        <>
-                          {mess?.image && <img src={mess?.image?.url} alt="" />}
-                          <span className="content-message">
-                            {mess.message}
-                          </span>
-                          <span className="time">
-                            {moment(
-                              moment_tz(mess.createdAt)
-                                .tz("Asia/Ho_Chi_Minh")
-                                .format()
-                            ).fromNow()}
-                          </span>
-                          {mess.likes && mess.likes.length > 0 && (
-                            <div className="totalLikeMessage">
-                              <BiLike className="icon" />
-                              <span>{mess.likes.length}</span>
-                            </div>
-                          )}
-                          <div className="featureMessage">
-                            {mess?.senderId._id === user._id && (
-                              <BsThreeDots
-                                className="icon more"
-                                onClick={(e) =>
-                                  handleSetDeleteMessage(e, mess._id)
-                                }
-                              />
-                            )}
-                            <BiLike
-                              className="icon"
-                              onClick={(e) => handleLikeMessage(e, mess)}
-                            />
-
-                            {delMessage === mess._id && (
-                              <span
-                                className="deleteMessage"
-                                onClick={(e) =>
-                                  handleDeleteMessage(e, mess._id)
-                                }
-                              >
-                                Xóa
-                              </span>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
-          <div className="chatSender">
-            {file && (
-              <div className="show-image">
-                {file && <img src={file} />}
-
-                {file && (
-                  <GrClose
-                    className="delete-image"
-                    onClick={handleSetDeleteImage}
-                  />
-                )}
-              </div>
-            )}
-            <div className="send-message">
-              <div
-                onClick={() => imageRef.current.click()}
-                className="upload-image"
-              >
-                <BsFillImageFill />
-              </div>
-
-              <TextareaAutosize
-                ref={textareaInput}
-                autoFocus
-                maxRows={3}
-                onChange={handleChange}
-                value={newMessage}
-                className="input-message"
-              />
-              <div
-                className="send-button button"
-                onClick={(e) => handleCreateMessage(e)}
-              >
-                Gửi
-              </div>
-              <input
-                type="file"
-                style={{ display: "none" }}
-                ref={imageRef}
-                onChange={handleAddImage}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-      {!profileUser && chat && (
         <>
           <div className="chat-content">
             <div className="chat-header">
               <div className="chat-list">
-                <div className="follower">
-                  <img
-                    src={chat.image ? chat.image : allUser[0]?.avatar?.url}
-                    alt=""
-                  />
-                  <div className="name">
-                    <span>{chat.name ? chat.name : allUser[0].name}</span>
+                <div className="back-mobile">
+                  {isMobile && (
+                    <AiOutlineArrowLeft
+                      size={24}
+                      className="mobile"
+                      onClick={() => setChatMobile(false)}
+                    />
+                  )}
+                  <div className="follower">
+                    <img src={profileUser?.avatar?.url} alt="" />
+                    <div className="name">
+                      <span>{profileUser?.name}</span>
+                    </div>
                   </div>
                 </div>
                 <div
@@ -496,13 +369,270 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
                   <AiFillInfoCircle />
                 </div>
               </div>
-              <hr
-                style={{
-                  width: "95%",
-                  border: "0.1px solid #ececec",
-                  marginTop: "20px",
-                }}
+            </div>
+
+            <div className="chatBody">
+              <div className="chatBody">
+                {messageNewChat &&
+                  messageNewChat.map((mess, index) => (
+                    <div
+                      key={mess?._id}
+                      className={
+                        mess?.senderId._id === user._id
+                          ? "showMessage owns"
+                          : "showMessage"
+                      }
+                    >
+                      {mess?.senderId._id !== user._id && (
+                        <div className="infoUser">
+                          <img src={mess?.senderId?.avatar?.url} alt="" />
+                        </div>
+                      )}
+                      <div
+                        ref={scroll}
+                        className={
+                          mess?.senderId._id === user._id
+                            ? "message own"
+                            : "message"
+                        }
+                        key={index}
+                      >
+                        {mess?.senderId._id !== user._id && (
+                          <span className="nameUserSend">
+                            {mess.senderId.name}
+                          </span>
+                        )}
+
+                        {mess && mess.isDeleted ? (
+                          <>
+                            <div>Tin nhắn đã bị xóa</div>
+                          </>
+                        ) : (
+                          <>
+                            {mess?.image && (
+                              <img src={mess?.image?.url} alt="" />
+                            )}
+                            <span className="content-message">
+                              {mess.message}
+                            </span>
+                            <span className="time">
+                              {moment(
+                                moment_tz(mess.createdAt)
+                                  .tz("Asia/Ho_Chi_Minh")
+                                  .format()
+                              ).fromNow()}
+                            </span>
+                            {mess.likes && mess.likes.length > 0 && (
+                              <div className="totalLikeMessage">
+                                <BiLike className="icon" />
+                                <span>{mess.likes.length}</span>
+                              </div>
+                            )}
+                            <div className="featureMessage">
+                              {mess?.senderId._id === user._id && (
+                                <BsThreeDots
+                                  className="icon more"
+                                  onClick={(e) =>
+                                    handleSetDeleteMessage(e, mess._id)
+                                  }
+                                />
+                              )}
+                              <BiLike
+                                className="icon"
+                                onClick={(e) => handleLikeMessage(e, mess)}
+                              />
+
+                              {delMessage === mess._id && (
+                                <span
+                                  className="deleteMessage"
+                                  onClick={(e) =>
+                                    handleDeleteMessage(e, mess._id)
+                                  }
+                                >
+                                  Xóa
+                                </span>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+            <div className="chatSender">
+              {file && (
+                <div className="show-image">
+                  {file && <img src={file} />}
+
+                  {file && (
+                    <GrClose
+                      className="delete-image"
+                      onClick={handleSetDeleteImage}
+                    />
+                  )}
+                </div>
+              )}
+              <div className="send-message">
+                <div
+                  onClick={() => imageRef.current.click()}
+                  className="upload-image"
+                >
+                  <BsFillImageFill />
+                </div>
+
+                <input
+                  ref={textareaInput}
+                  autoFocus
+                  type="text"
+                  onChange={handleChange}
+                  value={newMessage}
+                  className="input-message"
+                />
+                <div
+                  className="send-button button"
+                  onClick={(e) => handleCreateMessage(e)}
+                >
+                  Gửi
+                </div>
+                <input
+                  type="file"
+                  style={{ display: "none" }}
+                  ref={imageRef}
+                  onChange={handleAddImage}
+                />
+              </div>
+            </div>
+          </div>
+
+          {openMore && (
+            <div className="about-chat">
+              <div className="info-chat">
+                <div className="about">
+                  <img src={profileUser.avatar.url} alt="" />
+                  <span>{profileUser.name}</span>
+                </div>
+              </div>
+              <div className="feature">
+                <div className="about-member">
+                  <Link to={`/profile/${profileUser._id}`}>
+                    <div className="member icon">
+                      <HiUser />
+                    </div>
+                  </Link>
+                  <span>Xem trang cá nhân</span>
+                </div>
+              </div>
+              {addUserChat && (
+                <div className="listFriend">
+                  <div className="titleFriend">Tất cả bạn bè</div>
+                  <div className="friends">
+                    {friends &&
+                      friends.map((friend) => (
+                        <div className="friend" key={friend._id}>
+                          <div>
+                            <img src={friend?.avatar.url} alt="" />
+                            <div className="name">{friend.name}</div>
+                          </div>
+
+                          <input
+                            type="checkbox"
+                            className="choseFriend"
+                            onChange={() => handleAddUser(friend._id)}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                  <button onClick={handleAddMember}>Thêm</button>
+                </div>
+              )}
+              {showMembers && (
+                <div className="listMembers">
+                  {chat.members &&
+                    chat.members.map((member) => (
+                      <div className="about-member" key={member._id}>
+                        <div className="info-member">
+                          <img src={member?.avatar?.url} alt="" />
+                          <div className="isLeader">
+                            <span className="name-member">{member.name}</span>
+                            {chat.leader === member._id && (
+                              <span className="leader">Trưởng nhóm</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="drop-chat">
+                          {chat.leader === user._id &&
+                          member._id !== user._id ? (
+                            <>
+                              <RiUserShared2Line
+                                className="icon"
+                                onClick={(e) => handlePassLeader(e, member._id)}
+                              />
+                              <BiUserMinus
+                                className="icon-kick icon"
+                                onClick={(e) => handleKickMember(e, member._id)}
+                              />
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+              <AiOutlineClose
+                className="close-info"
+                size={32}
+                onClick={() => setOpenMore(false)}
               />
+            </div>
+          )}
+        </>
+      )}
+      {!profileUser && chat && (
+        <>
+          <div className="chat-content">
+            <div className="chat-header">
+              <div className="chat-list">
+                <div className="back-mobile">
+                  {isMobile && (
+                    <AiOutlineArrowLeft
+                      size={32}
+                      className="mobile"
+                      onClick={() => setChatMobile(false)}
+                    />
+                  )}
+                  <div className="follower">
+                    <img
+                      src={chat.image ? chat.image : allUser[0]?.avatar?.url}
+                      alt=""
+                    />
+                    <div className="name">
+                      <span>{chat.name ? chat.name : allUser[0].name}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="left-header">
+                  <div
+                    className="video-call"
+                    onClick={() =>
+                      window.open(
+                        `http://localhost:3000/conversation/${chat._id}`,
+                        "_blank"
+                      )
+                    }
+                  >
+                    <BsTelephoneFill />
+                  </div>
+                  <div
+                    className="feature-chat"
+                    onClick={() => setOpenMore(!openMore)}
+                  >
+                    <AiFillInfoCircle />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="chatBody">
@@ -611,10 +741,9 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
                   <BsFillImageFill />
                 </div>
 
-                <TextareaAutosize
+                <input
                   ref={textareaInput}
-                  autoFocus
-                  maxRows={3}
+                  type="text"
                   onChange={handleChange}
                   value={newMessage}
                   className="input-message"
@@ -701,7 +830,7 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
                   <div className="friends">
                     {friends &&
                       friends.map((friend) => (
-                        <div className="friend">
+                        <div className="friend" key={friend._id}>
                           <div>
                             <img src={friend?.avatar.url} alt="" />
                             <div className="name">{friend.name}</div>
@@ -753,6 +882,11 @@ const ChatBox = ({ chat, user, setCurrentChat, profileUser }) => {
                     ))}
                 </div>
               )}
+              <AiOutlineClose
+                className="close-info"
+                size={32}
+                onClick={() => setOpenMore(false)}
+              />
             </div>
           )}
         </>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { logout, reset } from "../../features/auth/authSlice";
 import { getAllChat } from "../../features/chat/chatSlice";
 import { getUserByName } from "../../features/user/userSlice";
+import { socket } from "../../utils/socket";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const NavBar = () => {
 
   const handleLogout = (e) => {
     e.preventDefault();
+    socket.emit("logout", user.user._id);
     dispatch(logout());
     dispatch(reset());
     navigate("/login");
@@ -81,6 +83,23 @@ const NavBar = () => {
                       <span>{user?.user.name}</span>
                     </div>
                   </Link>
+                  <div className="search">
+                    <hr />
+                    <Link to={"/search-people"}>
+                      <div className="search-mobile">
+                        <span>Tìm kiếm</span>
+                      </div>
+                    </Link>
+                  </div>
+
+                  <div className="search">
+                    <hr />
+                    <Link to={"/search-people"}>
+                      <div className="search-mobile">
+                        <span>Bạn bè</span>
+                      </div>
+                    </Link>
+                  </div>
                   <hr />
                   <div className="logout" onClick={handleLogout}>
                     <span>Đăng xuất</span>

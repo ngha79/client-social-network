@@ -132,11 +132,6 @@ const Post = ({ post }) => {
               <FaComment className="icon" />
               Bình luận
             </div>
-
-            <div className="status">
-              <FaShare className="icon" />
-              Chia sẻ
-            </div>
           </div>
         </div>
         {comment && <Comment postid={post._id} comments={post?.comments} />}

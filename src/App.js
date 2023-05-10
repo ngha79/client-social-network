@@ -19,9 +19,17 @@ import Diff from "./pages/outlet/Diff";
 import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import ResetPassword from "./pages/reset-password/ResetPassword";
 import SearchUser from "./pages/search-user/SearchUser";
+import { socket } from "./utils/socket";
+import ConversationChat from "./pages/conversation/ConversationChat";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
+
+  if (user) {
+    socket.on("connect", () => {
+      socket.emit("set user", user);
+    });
+  }
 
   const ProtectedRoute = ({ children }) => {
     if (!user) {
@@ -72,6 +80,10 @@ function App() {
     {
       path: "/reset-password/*",
       element: <ResetPassword />,
+    },
+    {
+      path: "/conversation/:conversationId",
+      element: <ConversationChat />,
     },
     {
       path: "*",

@@ -58,10 +58,16 @@
         .contentCreate {
             background-color: #ffffff;
             margin-left: 5px;
-            min-width: 600px;
+            width: 600px;
             display: flex;
             justify-content: center;
             flex-direction: column;
+            border-radius: 10px;
+
+            @media screen and (max-width: 768px) {
+                width: 100%;
+                margin: 0 20px;
+            }
 
             .title {
                 text-align: center;

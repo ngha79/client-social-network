@@ -52,6 +52,7 @@ const CreatePost = () => {
     e.preventDefault();
 
     const formData = new FormData();
+    if (!image && post.length === 0) return;
     if (image) {
       for (let i = 0; i < image.length; i++) {
         formData.append("image", image[i]);

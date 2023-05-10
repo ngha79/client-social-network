@@ -10,7 +10,10 @@ const Conversation = ({ chat }) => {
   return (
     <div className="chatlist">
       <div className="avatarChat">
-        <img src={chat.image ? chat.image : listUser[0]?.avatar?.url} alt="" />
+        <img
+          src={chat?.image ? chat?.image : listUser[0]?.avatar?.url}
+          alt=""
+        />
         <div className="status online"></div>
       </div>
       <span>{chat?.name ? chat?.name : listUser[0]?.name}</span>
