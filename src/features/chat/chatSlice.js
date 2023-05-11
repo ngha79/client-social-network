@@ -357,6 +357,7 @@ export const chatSlice = createSlice({
     builder
       .addCase(getAllChat.fulfilled, (state, action) => {
         state.chat = action.payload;
+        socket.emit("join chats", action.payload);
       })
       .addCase(createChat.fulfilled, (state, action) => {
         socket.emit("create group chat", action.payload);

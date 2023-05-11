@@ -100,21 +100,23 @@
                         }
                     }
 
-                    .feature-chat {
-                        display: flex;
-                        align-items: center;
-                        // height: 100%;
-                        padding: 10px;
-                        font-size: 26px;
-                        margin-right: 20px;
-                        color: #358ff9;
-                        border-radius: 50%;
 
-                        &:hover {
+                }
 
-                            background-color: #e2e2e2;
-                            cursor: pointer;
-                        }
+                .feature-chat {
+                    display: flex;
+                    align-items: center;
+                    // height: 100%;
+                    padding: 10px;
+                    font-size: 26px;
+                    margin-right: 20px;
+                    color: #358ff9;
+                    border-radius: 50%;
+
+                    &:hover {
+
+                        background-color: #e2e2e2;
+                        cursor: pointer;
                     }
                 }
             }
@@ -343,8 +345,15 @@
                 max-height: 150px;
                 padding: 10px 0;
 
+                form {
+                    display: flex;
+                    width: 100%;
+                    align-items: center;
+                    justify-content: center;
+                }
+
                 .upload-image {
-                    font-size: 20px;
+                    font-size: 28px;
                     cursor: pointer;
                     border-radius: 10px;
                     text-align: center;
@@ -371,7 +380,11 @@
                     cursor: pointer;
                     font-size: 16px;
                     color: white;
-                    background-color: #24e4f0;
+                    background-color: #2465f0;
+
+                    &:hover {
+                        background-color: #5d8cf1;
+                    }
                 }
 
                 .button {

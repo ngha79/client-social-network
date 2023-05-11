@@ -21,10 +21,12 @@ const LeftBar = () => {
               <p>{user?.user.name}</p>
             </div>
           </Link>
-          <div className="item">
-            <FaUserFriends className="icon" />
-            <p>Bạn bè</p>
-          </div>
+          <Link to={"/friends"}>
+            <div className="item">
+              <FaUserFriends className="icon" />
+              <p>Bạn bè</p>
+            </div>
+          </Link>
           <div className="item">
             <FaObjectGroup className="icon" />
             <p>Nhóm</p>

@@ -186,6 +186,57 @@ export const deleteInvitedFriend = createAsyncThunk(
   }
 );
 
+export const getInvitedFriend = createAsyncThunk(
+  "user/getInvitedFriend",
+  async (skip, thunkAPI) => {
+    try {
+      return await userService.getInvitedFriend(skip);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getSendFriend = createAsyncThunk(
+  "user/getSendFriend",
+  async (skip, thunkAPI) => {
+    try {
+      return await userService.getSendFriend(skip);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getMoreSuggestFriend = createAsyncThunk(
+  "user/getMoreSuggestFriend",
+  async (skip, thunkAPI) => {
+    try {
+      return await userService.getMoreSuggestFriend(skip);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const userSlice = createSlice({
   name: "user",
   initialState,
@@ -265,6 +316,23 @@ export const userSlice = createSlice({
       })
       .addCase(allSendFriend.fulfilled, (state, action) => {
         state.sendInvite = action.payload;
+      })
+      .addCase(getInvitedFriend.fulfilled, (state, action) => {
+        const friends = action.payload.map((friend) => {
+          console.log(
+            state.invitedFriends.some((user) => user._id === friend._id)
+          );
+          // if (!state.invitedFriends.some((user) => user._id === friend._id)) {
+          //   state.invitedFriends.push(friend);
+          // }
+        });
+        state.invitedFriends.push(...action.payload);
+      })
+      .addCase(getSendFriend.fulfilled, (state, action) => {
+        state.sendInvite.push(...action.payload);
+      })
+      .addCase(getMoreSuggestFriend.fulfilled, (state, action) => {
+        state.people.push(...action.payload);
       })
       .addCase(allInviteFriend.fulfilled, (state, action) => {
         state.invitedFriends = action.payload;

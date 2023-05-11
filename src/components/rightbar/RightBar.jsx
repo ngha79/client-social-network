@@ -44,7 +44,7 @@ const RightBar = () => {
   return (
     <div className="rightbar">
       <div className="container">
-        {people.length > 0 && (
+        {/* {people.length > 0 && (
           <div className="item">
             <span>Gợi ý cho bạn</span>
             {people &&
@@ -52,7 +52,7 @@ const RightBar = () => {
                 <div className="user" key={user._id}>
                   <Link to={`/profile/${user._id}`}>
                     <div className="userInfo">
-                      <img className="image" src={user?.avatar.url} alt="" />
+                      <img className="image" src={user?.avatar?.url} alt="" />
                       <p>{user?.name}</p>
                     </div>
                   </Link>
@@ -96,23 +96,31 @@ const RightBar = () => {
           {sendInvite.length > 0 && (
             <>
               <span>Lời mời đã gửi</span>
-              {sendInvite.map((user) => (
-                <div className="user" key={user._id}>
-                  <Link to={`/profile/${user._id}`}>
+              {[...Array(sendInvite.length % 5)].map((x, i) => (
+                <div className="user" key={sendInvite[i]?._id}>
+                  <Link to={`/profile/${sendInvite[i]?._id}`}>
                     <div className="userInfo">
-                      <img className="image" src={user?.avatar?.url} alt="" />
+                      <img
+                        className="image"
+                        src={sendInvite[i]?.avatar?.url}
+                        alt=""
+                      />
                       <div className="online"></div>
-                      <p>{user.name}</p>
+                      <p>{sendInvite[i]?.name}</p>
                     </div>
                   </Link>
-                  <button onClick={() => dispatch(deleteSendFriend(user._id))}>
+                  <button
+                    onClick={() =>
+                      dispatch(deleteSendFriend(sendInvite[i]?._id))
+                    }
+                  >
                     Hủy
                   </button>
                 </div>
               ))}
             </>
           )}
-        </div>
+        </div> */}
         <div className="item">
           <span>Người liên hệ</span>
           {friends &&

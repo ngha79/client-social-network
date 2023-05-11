@@ -474,33 +474,35 @@ const ChatBox = ({
                 </div>
               )}
               <div className="send-message">
-                <div
-                  onClick={() => imageRef.current.click()}
-                  className="upload-image"
-                >
-                  <BsFillImageFill />
-                </div>
+                <form onSubmit={handleCreateMessage}>
+                  <div
+                    onClick={() => imageRef.current.click()}
+                    className="upload-image"
+                  >
+                    <BsFillImageFill />
+                  </div>
 
-                <input
-                  ref={textareaInput}
-                  autoFocus
-                  type="text"
-                  onChange={handleChange}
-                  value={newMessage}
-                  className="input-message"
-                />
-                <div
-                  className="send-button button"
-                  onClick={(e) => handleCreateMessage(e)}
-                >
-                  Gửi
-                </div>
-                <input
-                  type="file"
-                  style={{ display: "none" }}
-                  ref={imageRef}
-                  onChange={handleAddImage}
-                />
+                  <input
+                    ref={textareaInput}
+                    autoFocus
+                    type="text"
+                    onChange={handleChange}
+                    value={newMessage}
+                    className="input-message"
+                  />
+                  <div
+                    className="send-button button"
+                    onClick={(e) => handleCreateMessage(e)}
+                  >
+                    Gửi
+                  </div>
+                  <input
+                    type="file"
+                    style={{ display: "none" }}
+                    ref={imageRef}
+                    onChange={handleAddImage}
+                  />
+                </form>
               </div>
             </div>
           </div>
@@ -734,32 +736,34 @@ const ChatBox = ({
                 </div>
               )}
               <div className="send-message">
-                <div
-                  onClick={() => imageRef.current.click()}
-                  className="upload-image"
-                >
-                  <BsFillImageFill />
-                </div>
+                <form onSubmit={handleCreateMessage}>
+                  <div
+                    onClick={() => imageRef.current.click()}
+                    className="upload-image"
+                  >
+                    <BsFillImageFill />
+                  </div>
 
-                <input
-                  ref={textareaInput}
-                  type="text"
-                  onChange={handleChange}
-                  value={newMessage}
-                  className="input-message"
-                />
-                <div
-                  className="send-button button"
-                  onClick={(e) => handleCreateMessage(e)}
-                >
-                  Gửi
-                </div>
-                <input
-                  type="file"
-                  style={{ display: "none" }}
-                  ref={imageRef}
-                  onChange={handleAddImage}
-                />
+                  <input
+                    ref={textareaInput}
+                    type="text"
+                    onChange={handleChange}
+                    value={newMessage}
+                    className="input-message"
+                  />
+                  <div
+                    className="send-button button"
+                    onClick={(e) => handleCreateMessage(e)}
+                  >
+                    Gửi
+                  </div>
+                  <input
+                    type="file"
+                    style={{ display: "none" }}
+                    ref={imageRef}
+                    onChange={handleAddImage}
+                  />
+                </form>
               </div>
             </div>
           </div>

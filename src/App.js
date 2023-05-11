@@ -21,15 +21,25 @@ import ResetPassword from "./pages/reset-password/ResetPassword";
 import SearchUser from "./pages/search-user/SearchUser";
 import { socket } from "./utils/socket";
 import ConversationChat from "./pages/conversation/ConversationChat";
+import Friends, {
+  AllFriends,
+  HomeFriends,
+  InvitedFriendRequest,
+  RecommendFriend,
+  SendInvitedFriend,
+} from "./pages/friends/Friends";
+import { useEffect } from "react";
 
 function App() {
   const { user } = useSelector((state) => state.auth);
 
-  if (user) {
-    socket.on("connect", () => {
-      socket.emit("set user", user);
-    });
-  }
+  useEffect(() => {
+    if (user) {
+      socket.on("connect", () => {
+        socket.emit("set user", user);
+      });
+    }
+  }, []);
 
   const ProtectedRoute = ({ children }) => {
     if (!user) {
@@ -62,6 +72,32 @@ function App() {
         {
           path: "/search-people",
           element: <SearchUser />,
+        },
+        {
+          path: "/friends",
+          element: <Friends />,
+          children: [
+            {
+              path: "/friends",
+              element: <HomeFriends />,
+            },
+            {
+              path: "/friends/requests",
+              element: <InvitedFriendRequest />,
+            },
+            {
+              path: "/friends/suggests",
+              element: <RecommendFriend />,
+            },
+            {
+              path: "/friends/sends",
+              element: <SendInvitedFriend />,
+            },
+            {
+              path: "/friends/allfriends",
+              element: <AllFriends />,
+            },
+          ],
         },
       ],
     },

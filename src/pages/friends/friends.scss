@@ -1,0 +1,221 @@
+.header-friends {
+    padding-top: 60px;
+    display: flex;
+    min-height: 100vh;
+
+    @media screen and (max-width: 600px) {
+        flex-direction: column;
+    }
+
+    .left {
+        width: 400px;
+        padding: 10px;
+        position: relative;
+
+        @media screen and (max-width: 600px) {
+            width: 100%;
+        }
+
+        @media screen and (min-width: 600px) {}
+
+
+        .flex-items {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            gap: 10px;
+            padding: 10px;
+
+            h1 {
+                margin: 0;
+                font-size: 28px;
+            }
+
+            h3 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 500;
+            }
+
+
+        }
+
+        .hover {
+            cursor: pointer;
+            margin: 10px 0;
+
+            &:hover {
+                background-color: #f3f0f0;
+                border-radius: 8px;
+            }
+        }
+
+        .head {
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        .icon {
+            padding: 5px;
+            border-radius: 50%;
+            background-color: #eeecec;
+
+
+        }
+
+        .icon-hover {
+
+            &:hover {
+                background-color: #dad8d8;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .right {
+        background-color: #eeecec;
+        width: 100%;
+        min-height: 100vh;
+        padding: 30px;
+        box-shadow: 3px 5px 6px 1px rgb(203, 227, 235);
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 30px;
+
+            header {
+
+                h1 {
+                    font-size: 20px;
+                }
+            }
+
+            center {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+
+                .user-friend {
+                    height: max-content;
+                    margin: 20px 0;
+
+                    @media screen and (max-width: 600px) {
+                        width: 100%;
+                    }
+
+                    @media screen and (min-width: 750px) and (max-width: 1000px) {
+                        width: 49%;
+                    }
+
+                    @media screen and (min-width: 1000px) and (max-width: 1200px) {
+                        width: 33%;
+                    }
+
+                    @media screen and (min-width: 1200px) {
+                        width: 25%;
+                    }
+
+                    @media screen and (min-width: 1600px) {
+                        width: 20%;
+                    }
+
+                    .user {
+                        background-color: white;
+                        margin: 10px 10px;
+                        height: 100%;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        box-shadow: 2px 3px 1px #dad8d8;
+
+                        header {
+                            max-height: 300px;
+
+                            img {
+                                border: 1px solid #f1f0f0;
+                                width: 100%;
+                                object-fit: cover;
+                            }
+                        }
+
+                        center {
+                            padding: 10px;
+
+                            h3 {
+                                font-size: 18px;
+                                font-weight: 500;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+
+                                &:hover {
+                                    cursor: pointer;
+                                    text-decoration: underline;
+                                }
+                            }
+                        }
+
+                        footer {
+                            width: 100%;
+                            display: flex;
+                            gap: 10px;
+                            justify-content: start;
+                            margin-bottom: 20px;
+
+                            button {
+                                width: 50%;
+                                padding: 10px;
+                                border: none;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                font-size: 14px;
+                                font-weight: 500;
+                                margin: 0 10px;
+
+                                &:hover {
+                                    background-color: #dadada;
+                                }
+
+
+                            }
+
+                            .blue-button {
+                                background-color: rgb(14, 166, 253);
+                                color: white;
+
+                                &:hover {
+                                    background-color: rgb(93, 183, 235);
+                                }
+                            }
+
+                            .red-button {
+                                background-color: rgb(253, 109, 83);
+                                color: white;
+
+                                &:hover {
+                                    background-color: rgb(235, 110, 93);
+                                }
+                            }
+
+                            .button-full {
+                                width: 100%;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .more-user {
+                text-align: end;
+                font-size: 16px;
+                cursor: pointer;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+
+}

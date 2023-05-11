@@ -90,6 +90,30 @@ const allInviteFriend = async (userId) => {
   return response.data;
 };
 
+const getMoreSuggestFriend = async (skip) => {
+  const response = await axiosClient.request({
+    method: "GET",
+    url: `${API_URI}/more-friend?skip=${skip}`,
+  });
+  return response.data;
+};
+
+const getInvitedFriend = async (skip) => {
+  const response = await axiosClient.request({
+    method: "GET",
+    url: `${API_URI}/invited-friend?skip=${skip}`,
+  });
+  return response.data;
+};
+
+const getSendFriend = async (skip) => {
+  const response = await axiosClient.request({
+    method: "GET",
+    url: `${API_URI}/send-friend?skip=${skip}`,
+  });
+  return response.data;
+};
+
 const userService = {
   getUserByName,
   getUserById,
@@ -102,6 +126,9 @@ const userService = {
   deleteFriend,
   deleteSendFriend,
   deleteInvitedFriend,
+  getInvitedFriend,
+  getSendFriend,
+  getMoreSuggestFriend,
 };
 
 export default userService;

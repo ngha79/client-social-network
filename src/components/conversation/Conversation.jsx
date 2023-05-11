@@ -14,7 +14,7 @@ const Conversation = ({ chat }) => {
           src={chat?.image ? chat?.image : listUser[0]?.avatar?.url}
           alt=""
         />
-        <div className="status online"></div>
+        {!chat.image && <div className="status online"></div>}
       </div>
       <span>{chat?.name ? chat?.name : listUser[0]?.name}</span>
     </div>

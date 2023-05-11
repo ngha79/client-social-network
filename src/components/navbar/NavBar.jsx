@@ -16,7 +16,8 @@ const NavBar = () => {
   const [openFeature, setOpenFeature] = useState(false);
   const [searchUser, setSearchUser] = useState("");
 
-  const featureUser = () => {
+  const featureUser = (e) => {
+    e.stopPropagation();
     setOpenFeature(!openFeature);
   };
 
@@ -37,7 +38,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="navbar">
+    <div className="navbar" onClick={() => setOpenFeature(false)}>
       <div className="content">
         <div className="left">
           <div className="logo">
@@ -92,9 +93,9 @@ const NavBar = () => {
                     </Link>
                   </div>
 
-                  <div className="search">
+                  <div className="friend">
                     <hr />
-                    <Link to={"/search-people"}>
+                    <Link to={"/friends"}>
                       <div className="search-mobile">
                         <span>Bạn bè</span>
                       </div>

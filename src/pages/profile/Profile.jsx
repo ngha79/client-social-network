@@ -28,16 +28,18 @@ const Profile = () => {
   const { friends, sendInvite, invitedFriends } = useSelector(
     (state) => state.user
   );
-  const userId = useParams();
+  const { userId } = useParams();
   const dispatch = useDispatch();
   const [openFollowing, setOpenFollowing] = useState(false);
   const allPosts = () => {
-    const allpost = posts.filter((post) => post.author._id === userId.userId);
+    const allpost = posts.filter((post) => post.author._id === userId);
     return allpost;
   };
 
   useEffect(() => {
-    dispatch(getUserById(userId.userId));
+    if (profileUser._id !== userId) {
+      dispatch(getUserById(userId));
+    }
   }, [userId]);
 
   const isFriend = () => {
@@ -76,7 +78,7 @@ const Profile = () => {
                 {profileUser?.friends && profileUser?.friends.length} Bạn bè
               </div>
             </div>
-            {user && user?.user._id === userId.userId ? (
+            {user && user?.user._id === userId ? (
               <div className="update-profile">
                 <button>Update Profile</button>
               </div>
@@ -152,7 +154,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="post-info">
-          {user && user?.user._id === userId.userId && <CreatePost />}
+          {user && user?.user._id === userId && <CreatePost />}
           {allPosts().map((post) => (
             <Post post={post} key={post?._id} />
           ))}
