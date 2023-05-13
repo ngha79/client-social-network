@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./chat.scss";
 import { BsThreeDots } from "react-icons/bs";
@@ -7,7 +7,6 @@ import ChatBox from "../../components/chatbox/ChatBox";
 import Conversation from "../../components/conversation/Conversation";
 import {
   addGroup,
-  allChat,
   createChat,
   getAllChat,
   getChatByMember,
@@ -18,6 +17,9 @@ import {
 import { toast } from "react-toastify";
 import { socket } from "../../utils/socket";
 import { useLocation } from "react-router-dom";
+import CallVideo from "../../components/callvideo/CallVideo";
+import CallVideoSend from "../../components/callvideo/CallVideoSend";
+import ConversationChat from "../conversation/ConversationChat";
 
 const useViewport = () => {
   const [width, setWidth] = React.useState(window.innerWidth);
@@ -35,7 +37,7 @@ const Chat = () => {
   const { user } = useSelector((state) => state.auth);
   const { friends } = useSelector((state) => state.user);
 
-  const { chat, messages, updateChatCurrent, memberChat } = useSelector(
+  const { chat, isGetChat, updateChatCurrent, memberChat } = useSelector(
     (state) => state.chat
   );
   const [currentChat, setCurrentChat] = useState(null);
@@ -45,6 +47,7 @@ const Chat = () => {
   const [nameChat, setNameChat] = useState("");
   const [avatarChat, setAvatarChat] = useState();
   const [userChat, setUserChat] = useState([]);
+
   const [chatMobile, setChatMobile] = useState(false);
   const viewPort = useViewport();
   const isMobile = viewPort.width <= 600;
@@ -70,10 +73,6 @@ const Chat = () => {
     });
   }, []);
 
-  useEffect(() => {
-    dispatch(getAllChat(user.user._id));
-  }, []);
-
   const handleSetChat = (e, chatmess) => {
     e.preventDefault();
     location.state = {};
@@ -82,10 +81,8 @@ const Chat = () => {
     dispatch(resetMemberChat());
     dispatch(getMessages(chatmess._id));
     setChatMobile(true);
-    socket.emit("joinRoom", { chatId: chatmess._id, userId: user.user._id });
+    socket.emit("joinRoom", { chatId: chatmess._id, userId: user._id });
   };
-
-  // const currentRoom = useMemo(handleSetChat, [currentChat]);
 
   const handleCreateGroup = (e) => {
     e.preventDefault();
@@ -104,7 +101,7 @@ const Chat = () => {
     } else {
       formData.append("members", userChat);
     }
-    formData.append("leader", user.user._id);
+    formData.append("leader", user._id);
     formData.append("type", "Group");
 
     dispatch(createChat(formData));
@@ -138,7 +135,7 @@ const Chat = () => {
               {Object.keys(memberChat).length !== 0 ? (
                 <ChatBox
                   chat={memberChat[0]}
-                  user={user.user}
+                  user={user}
                   setCurrentChat={setCurrentChat}
                   isMobile={isMobile}
                   setChatMobile={setChatMobile}
@@ -146,7 +143,7 @@ const Chat = () => {
               ) : Object.keys(profileUser).length !== 0 ? (
                 <ChatBox
                   profileUser={profileUser}
-                  user={user.user}
+                  user={user}
                   setCurrentChat={setCurrentChat}
                   isMobile={true}
                   setChatMobile={setChatMobile}
@@ -158,13 +155,14 @@ const Chat = () => {
                       ? updateChatCurrent
                       : currentChat
                   }
-                  user={user.user}
+                  user={user}
                   setCurrentChat={setCurrentChat}
                   isMobile={isMobile}
                   setChatMobile={setChatMobile}
                 />
               )}
             </div>
+            <CallVideo />
           </div>
         ) : (
           <div className="chat">
@@ -199,18 +197,19 @@ const Chat = () => {
                     </div>
                   ))}
               </div>
+              <CallVideo />
             </div>
             {/* <div className="rightChat">
           {Object.keys(memberChat).length !== 0 ? (
             <ChatBox
               chat={memberChat[0]}
-              user={user.user}
+              user={user}
               setCurrentChat={setCurrentChat}
             />
           ) : Object.keys(profileUser).length !== 0 ? (
             <ChatBox
               profileUser={profileUser}
-              user={user.user}
+              user={user}
               setCurrentChat={setCurrentChat}
             />
           ) : (
@@ -220,7 +219,7 @@ const Chat = () => {
                   ? updateChatCurrent
                   : currentChat
               }
-              user={user.user}
+              user={user}
               setCurrentChat={setCurrentChat}
             />
           )}
@@ -326,14 +325,14 @@ const Chat = () => {
         {Object.keys(memberChat).length !== 0 ? (
           <ChatBox
             chat={memberChat[0]}
-            user={user.user}
+            user={user}
             setCurrentChat={setCurrentChat}
             isMobile={false}
           />
         ) : Object.keys(profileUser).length !== 0 ? (
           <ChatBox
             profileUser={profileUser}
-            user={user.user}
+            user={user}
             setCurrentChat={setCurrentChat}
             isMobile={false}
           />
@@ -344,7 +343,7 @@ const Chat = () => {
                 ? updateChatCurrent
                 : currentChat
             }
-            user={user.user}
+            user={user}
             setCurrentChat={setCurrentChat}
             isMobile={false}
           />

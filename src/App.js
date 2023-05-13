@@ -20,7 +20,6 @@ import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import ResetPassword from "./pages/reset-password/ResetPassword";
 import SearchUser from "./pages/search-user/SearchUser";
 import { socket } from "./utils/socket";
-import ConversationChat from "./pages/conversation/ConversationChat";
 import Friends, {
   AllFriends,
   HomeFriends,
@@ -34,15 +33,15 @@ function App() {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user) {
+    if (user?._id) {
       socket.on("connect", () => {
-        socket.emit("set user", user);
+        socket.emit("set user", user._id);
       });
     }
   }, []);
-
+  console.log(user);
   const ProtectedRoute = ({ children }) => {
-    if (!user) {
+    if (!user?._id) {
       return <Navigate to={"/login"} />;
     }
     return children;
@@ -117,10 +116,7 @@ function App() {
       path: "/reset-password/*",
       element: <ResetPassword />,
     },
-    {
-      path: "/conversation/:conversationId",
-      element: <ConversationChat />,
-    },
+
     {
       path: "*",
       element: <NotFound />,

@@ -13,7 +13,6 @@ import {
   getMoreSuggestFriend,
   getSendFriend,
 } from "../../features/user/userSlice";
-import { useEffect, useState } from "react";
 
 export const InvitedFriendRequest = () => {
   const { invitedFriends, people } = useSelector((state) => state.user);
@@ -31,11 +30,11 @@ export const InvitedFriendRequest = () => {
           <ItemFriend user={user} key={user._id} typeButton={"invited"} />
         ))}
       </center>
-      {/* {invitedFriends.length > 0 && ( */}
-      <footer className="more-user" onClick={handleGetMoreUser}>
-        Xem thêm
-      </footer>
-      {/* )} */}
+      {invitedFriends.length > 0 && (
+        <footer className="more-user" onClick={handleGetMoreUser}>
+          Xem thêm
+        </footer>
+      )}
     </div>
   );
 };
@@ -65,9 +64,7 @@ export const RecommendFriend = () => {
 };
 
 export const SendInvitedFriend = () => {
-  const { invitedFriends, people, sendInvite, friends } = useSelector(
-    (state) => state.user
-  );
+  const { people, sendInvite } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const handleGetMoreUser = () => {
     dispatch(getSendFriend(people.length));
@@ -107,9 +104,7 @@ export const AllFriends = () => {
 };
 
 export const HomeFriends = () => {
-  const { invitedFriends, people, sendInvite, friends } = useSelector(
-    (state) => state.user
-  );
+  const { invitedFriends, sendInvite } = useSelector((state) => state.user);
   return (
     <div>
       {invitedFriends.length > 0 && <InvitedFriendRequest />}

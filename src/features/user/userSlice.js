@@ -343,7 +343,7 @@ export const userSlice = createSlice({
         );
         state.people = newPeople;
         state.sendInvite.push(action.payload);
-        socket.emit("add friend", user.user, action.payload._id);
+        socket.emit("add friend", user, action.payload._id);
       })
       .addCase(acceptFriend.fulfilled, (state, action) => {
         const newInvite = state.invitedFriends.filter(
@@ -351,7 +351,7 @@ export const userSlice = createSlice({
         );
         state.invitedFriends = newInvite;
         state.friends.push(action.payload);
-        socket.emit("accept friend", user.user, action.payload._id);
+        socket.emit("accept friend", user, action.payload._id);
       })
       .addCase(deleteFriend.fulfilled, (state, action) => {
         const newFriends = state.friends.filter(
@@ -359,7 +359,7 @@ export const userSlice = createSlice({
         );
         state.friends = newFriends;
         state.people.push(action.payload);
-        socket.emit("unfriend", user.user, action.payload._id);
+        socket.emit("unfriend", user, action.payload._id);
       })
       .addCase(deleteSendFriend.fulfilled, (state, action) => {
         const newFriends = state.sendInvite.filter(
@@ -367,7 +367,7 @@ export const userSlice = createSlice({
         );
         state.sendInvite = newFriends;
         state.people.push(action.payload);
-        socket.emit("delete send friend", user.user, action.payload._id);
+        socket.emit("delete send friend", user, action.payload._id);
       })
       .addCase(deleteInvitedFriend.fulfilled, (state, action) => {
         const newFriends = state.invitedFriends.filter(
@@ -375,7 +375,7 @@ export const userSlice = createSlice({
         );
         state.invitedFriends = newFriends;
         state.people.push(action.payload);
-        socket.emit("refuse invited friend", user.user, action.payload._id);
+        socket.emit("refuse invited friend", user, action.payload._id);
       });
   },
 });

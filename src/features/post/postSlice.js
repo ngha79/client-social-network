@@ -4,7 +4,6 @@ import postsService from "./postService";
 const initialState = {
   posts: [],
   post: [],
-  comments: [],
   profileUser: [],
   isLoading: false,
   isSuccess: false,
@@ -367,10 +366,10 @@ export const postsSlice = createSlice({
         state.posts = updatePosts;
       })
       .addCase(likeComment.fulfilled, (state, action) => {
-        const updatePosts = state.posts.map((post) => {
-          if (post._id === action.payload.post._id) {
+        let updatePosts = state.posts.map((post) => {
+          if (post._id == action.payload.post) {
             post.comments.map((comment) => {
-              if (comment._id === action.payload._id) {
+              if (comment._id == action.payload._id) {
                 comment.like = action.payload.like;
               }
               return comment;
@@ -381,10 +380,10 @@ export const postsSlice = createSlice({
         state.posts = updatePosts;
       })
       .addCase(rmLikeComment.fulfilled, (state, action) => {
-        const updatePosts = state.posts.map((post) => {
-          if (post._id === action.payload.post._id) {
+        let updatePosts = state.posts.map((post) => {
+          if (post._id == action.payload.post) {
             post.comments.map((comment) => {
-              if (comment._id === action.payload._id) {
+              if (comment._id == action.payload._id) {
                 comment.like = action.payload.like;
               }
               return comment;
@@ -395,7 +394,7 @@ export const postsSlice = createSlice({
         state.posts = updatePosts;
       })
       .addCase(addReplyComment.fulfilled, (state, action) => {
-        const updatePosts = state.posts.map((post) => {
+        let updatePosts = state.posts.map((post) => {
           if (post._id === action.payload.post) {
             post.comments.map((comment) => {
               if (comment._id === action.payload._id) {

@@ -35,6 +35,12 @@
                 justify-content: space-between;
                 align-items: center;
 
+                form {
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                }
+
                 .send-text {
                     width: 100%;
                     margin-right: 10px;
@@ -150,7 +156,7 @@
                         border-radius: 10px;
                         width: 100%;
                         padding: 5px 10px;
-                        background-color: #dcdddd;
+                        background-color: #f0eeee;
                         position: relative;
 
                         .name {
@@ -173,6 +179,12 @@
                             border-radius: 20px;
                             height: 200px;
                             width: 100%;
+
+                            img {
+                                border-radius: 0px;
+                                width: 100%;
+                                height: 180px;
+                            }
                         }
 
                         .feature-comment {
@@ -206,26 +218,27 @@
 
                         .total-like {
                             position: absolute;
-                            bottom: -10px;
+                            bottom: -6px;
                             right: 0;
                             display: flex;
                             align-items: center;
                             cursor: pointer;
+                            gap: 4px;
 
                             .icon-like {
-                                font-size: 14px;
+                                font-size: 16px;
                                 color: #2688ca;
                                 padding: 3px;
-                                background-color: #909497;
+                                background-color: #c2c5c7;
                                 border-radius: 50%;
 
                                 &:hover {
-                                    background-color: #a2a6aa;
+                                    background-color: #92b3d3;
                                 }
                             }
 
                             span {
-                                font-size: 12px;
+                                font-size: 14px;
                             }
                         }
                     }
@@ -281,7 +294,7 @@
                 }
 
                 .content-reply {
-                    background-color: #dfe1e4;
+                    background-color: #f0eeee;
                     padding: 10px;
                     border-radius: 10px;
                     position: relative;
@@ -358,23 +371,23 @@
                         display: flex;
                         bottom: -5px;
                         align-items: center;
+                        gap: 4px;
 
 
                         .like-reply-icon {
                             color: #2688ca;
                             border-radius: 50%;
-                            background-color: #adb2b6;
-                            font-size: 12px;
+                            background-color: #c2c5c7;
+                            font-size: 18x;
                             padding: 4px;
 
                             &:hover {
-
-                                background-color: #909497;
+                                background-color: #94b5ce;
                             }
                         }
 
                         span {
-                            font-size: 12px;
+                            font-size: 14px;
                         }
                     }
 

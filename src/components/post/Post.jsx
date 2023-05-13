@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./post.scss";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  FaTimesCircle,
-  FaHandPointUp,
-  FaComment,
-  FaShare,
-} from "react-icons/fa";
+import { FaTimesCircle, FaComment } from "react-icons/fa";
 import { BiLike } from "react-icons/bi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ReactImageGrid from "facebook-image-grid";
 import {
   deletePost,
-  getAllComments,
-  getAllPost,
   likePost,
-  reset,
   unlikePost,
 } from "../../features/post/postSlice";
 import moment_tz from "moment-timezone";
@@ -75,7 +67,7 @@ const Post = ({ post }) => {
               </p>
             </div>
           </Link>
-          {post.author._id === user.user._id && (
+          {post.author._id === user._id && (
             <div className="feature" onClick={() => setMoreOpen(!moreOpen)}>
               <FaTimesCircle className="icon" />
             </div>
@@ -116,8 +108,7 @@ const Post = ({ post }) => {
             </div>
           </div>
           <div className="feature">
-            {post.likes &&
-            post.likes.some((like) => like === user?.user._id) ? (
+            {post.likes && post.likes.some((like) => like === user._id) ? (
               <div className="status" onClick={handleRemoveLike}>
                 <BiLike className="like" />
                 <span style={{ color: "#0b83e6" }}>Thích</span>

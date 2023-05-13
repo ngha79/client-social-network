@@ -1,4 +1,4 @@
-import { FaSignInAlt, FaKey } from "react-icons/fa";
+import { FaKey } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,7 @@ const ForgotPassword = () => {
   };
   useEffect(() => {
     if (isError) {
-      toast.error(message.message || message);
+      toast.error(message);
     }
     if (isSuccess) {
       toast.success("Vui lòng kiểm tra Email của bạn");

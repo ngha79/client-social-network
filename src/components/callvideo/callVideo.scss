@@ -1,0 +1,63 @@
+.call-video {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background: rgba(211, 209, 209, 0.2);
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .video {
+        min-width: 300px;
+        min-height: 100px;
+        max-height: 150px;
+        background: white;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 1px 3px 2px 4px rgb(217, 231, 243);
+
+        header {
+            margin: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        center {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            height: max-content;
+            justify-content: center;
+            margin-bottom: 20px;
+
+            button {
+                width: 40%;
+                padding: 10px;
+                border-radius: 10px;
+                border: none;
+                cursor: pointer;
+                background-color: rgb(51, 147, 226);
+                color: white;
+
+                &:hover {
+                    background-color: rgb(107, 172, 224);
+                }
+            }
+
+            .refuse {
+                background-color: rgb(226, 86, 51);
+
+                &:hover {
+                    background-color: rgb(224, 111, 107);
+                }
+            }
+        }
+
+    }
+}

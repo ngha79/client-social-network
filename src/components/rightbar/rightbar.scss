@@ -41,9 +41,10 @@
 
                 .userInfo {
                     display: flex;
-                    align-items: center;
+                    align-items: start;
                     padding: 10px 0;
                     position: relative;
+
 
                     .image {
                         margin-right: 10px;
@@ -53,8 +54,12 @@
                         object-fit: cover;
                     }
 
-                    p {
+                    .name {
                         font-size: 15px;
+                        width: 100%;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
                     }
 
                     &:hover {
@@ -69,6 +74,17 @@
                         background-color: limegreen;
                         bottom: 10px;
                         left: 26px;
+                    }
+
+                    .lastLogin {
+                        position: absolute;
+                        height: 12px;
+                        width: max-content;
+                        border-radius: 50%;
+                        bottom: 10px;
+                        left: 48px;
+                        font-size: 12px;
+                        display: flex;
                     }
                 }
 

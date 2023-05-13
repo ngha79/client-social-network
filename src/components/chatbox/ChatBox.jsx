@@ -18,7 +18,8 @@ import { GrClose } from "react-icons/gr";
 import moment_tz from "moment-timezone";
 import moment from "moment";
 import "moment/locale/vi";
-import TextareaAutosize from "react-textarea-autosize";
+import ReactImageGrid from "facebook-image-grid";
+
 import {
   createMessage,
   deleteMessage,
@@ -45,9 +46,12 @@ import {
   updateChatAfterAddMember,
   exitChatCurrent,
   addGroup,
+  callVideoChat,
 } from "../../features/chat/chatSlice";
 import { socket } from "../../utils/socket";
 import { Link, useLocation } from "react-router-dom";
+import noti from "../../assets/callvideosound.mp3";
+import { NotificationSound } from "../notification/Notification";
 
 const ChatBox = ({
   chat,
@@ -82,6 +86,8 @@ const ChatBox = ({
   const [userChat, setUserChat] = useState([]);
   const [image, setImage] = useState([]);
   const [file, setFile] = useState();
+  const [callVideoSend, setCallVideoSend] = useState(false);
+  const [callVideoReceiver, setCallVideoReceiver] = useState(false);
   const dispatch = useDispatch();
   const imageRef = useRef();
   const scroll = useRef();
@@ -135,41 +141,24 @@ const ChatBox = ({
     setImage([]);
   };
 
-  useEffect(() => {
-    socket.emit("addMessage", {
-      msg: messageAction,
-      chatId: messageAction.chat,
-    });
-  }, [messageAction]);
+  const handleSetDeleteMessage = (e, messageId) => {
+    e.preventDefault();
+    if (delMessage) {
+      setDelMessage("");
+    } else {
+      setDelMessage(messageId);
+    }
+  };
+
+  // useEffect(() => {
+  //   socket.emit("addMessage", {
+  //     msg: messageAction,
+  //     chatId: messageAction.chat,
+  //   });
+  // }, [messageAction]);
 
   useEffect(() => {
-    socket.on("receiverMessage", (chat) => {
-      dispatch(receiverMessage(chat.receiver));
-    });
-
-    socket.on("updateMessageDel", (chat) => {
-      dispatch(messageDelete(chat.delete));
-    });
-    socket.on("updateMessageLike", (chat) => {
-      dispatch(sendMessageLike(chat.like));
-    });
-    socket.on("updateMessageUnLike", (chat) => {
-      dispatch(sendMessageUnLike(chat.unlike));
-    });
-    socket.on("passLeaderSend", (chat) => {
-      console.log(chat);
-      dispatch(updateChatSend(chat.updateChat));
-    });
-    socket.on("addMemberSend", (chat) => {
-      if (chat.memberId.some((member) => member === user._id.toString())) {
-        dispatch(updateChatAfterAddMember(chat.updateChat));
-      } else {
-        dispatch(updateAddMember(chat.updateChat));
-      }
-      dispatch(updateChat());
-    });
     socket.on("deleteChatSend", (chat) => {
-      console.log(chat);
       dispatch(deleteChatCurrent(chat.updateChat));
       setCurrentChat();
       dispatch(updateChat());
@@ -183,30 +172,14 @@ const ChatBox = ({
       }
       dispatch(updateChat());
     });
-    socket.on("exitChatSend", (chat) => {
-      dispatch(exitChatCurrent(chat.updateChat));
-      dispatch(updateChat());
-    });
-    socket.on("create group", (group) => {
-      dispatch(addGroup(group));
-    });
   }, []);
 
-  const handleSetDeleteMessage = (e, messageId) => {
-    e.preventDefault();
-    if (delMessage) {
-      setDelMessage("");
-    } else {
-      setDelMessage(messageId);
-    }
-  };
-
-  useEffect(() => {
-    socket.emit("delMessage", {
-      msg: messageDel,
-      chatId: messageDel.chat,
-    });
-  }, [messageDel]);
+  // useEffect(() => {
+  //   socket.emit("delMessage", {
+  //     msg: messageDel,
+  //     chatId: messageDel.chat,
+  //   });
+  // }, [messageDel]);
 
   const handleDeleteMessage = (e, messageId) => {
     e.preventDefault();
@@ -222,57 +195,6 @@ const ChatBox = ({
       dispatch(likeMessage(message._id));
     }
   };
-
-  // useEffect(() => {
-  //   socket.emit("likeMessage", {
-  //     msg: messageLike,
-  //     chatId: messageLike.chat,
-  //   });
-  // }, [messageLike]);
-
-  // useEffect(() => {
-  //   socket.emit("unlikeMessage", {
-  //     msg: messageUnLike,
-  //     chatId: messageUnLike.chat,
-  //   });
-  // }, [messageUnLike]);
-
-  // useEffect(() => {
-  //   socket.emit("passLeader", {
-  //     msg: passLeader,
-  //     chatId: passLeader._id,
-  //   });
-  // }, [passLeader]);
-
-  // useEffect(() => {
-  //   socket.emit("kickMember", {
-  //     msg: kickMember,
-  //     chatId: kickMember._id,
-  //     memberKick: memberKick,
-  //   });
-  // }, [kickMember]);
-
-  // useEffect(() => {
-  //   socket.emit("addMember", {
-  //     msg: addMember,
-  //     chatId: addMember._id,
-  //     memberId: memberAdd,
-  //   });
-  // }, [addMember]);
-
-  // useEffect(() => {
-  //   socket.emit("deleteChat", {
-  //     msg: deleteOrDropChat,
-  //     chatId: deleteOrDropChat._id,
-  //   });
-  // }, [deleteOrDropChat]);
-
-  // useEffect(() => {
-  //   socket.emit("exitChat", {
-  //     msg: exitChat,
-  //     chatId: exitChat._id,
-  //   });
-  // }, [exitChat]);
 
   const allUser = chat?.members.filter((member) => member._id !== user._id);
 
@@ -340,6 +262,12 @@ const ChatBox = ({
     }
     setchat();
   }
+
+  function handleSetCallVideo() {
+    dispatch(callVideoChat(true));
+    socket.emit("call video send", chat._id);
+  }
+
   return (
     <div className="chatBox">
       {profileUser && !chat && (
@@ -410,7 +338,9 @@ const ChatBox = ({
                         ) : (
                           <>
                             {mess?.image && (
-                              <img src={mess?.image?.url} alt="" />
+                              <ReactImageGrid
+                                images={Array.of(mess?.image?.url)}
+                              />
                             )}
                             <span className="content-message">
                               {mess.message}
@@ -616,15 +546,7 @@ const ChatBox = ({
                   </div>
                 </div>
                 <div className="left-header">
-                  <div
-                    className="video-call"
-                    onClick={() =>
-                      window.open(
-                        `http://localhost:3000/conversation/${chat._id}`,
-                        "_blank"
-                      )
-                    }
-                  >
+                  <div className="video-call" onClick={handleSetCallVideo}>
                     <BsTelephoneFill />
                   </div>
                   <div
@@ -674,7 +596,13 @@ const ChatBox = ({
                         </>
                       ) : (
                         <>
-                          {mess?.image && <img src={mess?.image?.url} alt="" />}
+                          {mess?.image && (
+                            <div className="image">
+                              <ReactImageGrid
+                                images={Array.of(mess?.image?.url)}
+                              />
+                            </div>
+                          )}
                           <span className="content-message">
                             {mess.message}
                           </span>

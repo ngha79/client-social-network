@@ -11,14 +11,15 @@ import { useSelector } from "react-redux";
 
 const LeftBar = () => {
   const { user } = useSelector((state) => state.auth);
+  console.log(user);
   return (
     <div className="leftbar">
       <div className="container">
         <div className="menu">
-          <Link to={`/profile/${user?.user._id}`}>
+          <Link to={`/profile/${user?._id}`}>
             <div className="user">
-              <img src={user?.user.avatar.url} alt="" />
-              <p>{user?.user.name}</p>
+              <img src={user?.avatar?.url} alt="" />
+              <p>{user?.name}</p>
             </div>
           </Link>
           <Link to={"/friends"}>

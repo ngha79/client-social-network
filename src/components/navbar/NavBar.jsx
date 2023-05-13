@@ -2,9 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "./navbar.scss";
 import { FaSearch, FaFacebookMessenger, FaBell, FaHome } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { logout, reset } from "../../features/auth/authSlice";
-import { getAllChat } from "../../features/chat/chatSlice";
 import { getUserByName } from "../../features/user/userSlice";
 import { socket } from "../../utils/socket";
 
@@ -12,7 +11,6 @@ const NavBar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { searchPeople } = useSelector((state) => state.user);
   const [openFeature, setOpenFeature] = useState(false);
   const [searchUser, setSearchUser] = useState("");
 
@@ -23,7 +21,7 @@ const NavBar = () => {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    socket.emit("logout", user.user._id);
+    socket.emit("logout", user._id);
     dispatch(logout());
     dispatch(reset());
     navigate("/login");
@@ -73,15 +71,15 @@ const NavBar = () => {
           </div> */}
 
           <div className="user">
-            <img src={user?.user.avatar.url} alt="" onClick={featureUser} />
+            <img src={user?.avatar?.url} alt="" onClick={featureUser} />
 
             {openFeature && (
               <div className="featureUser">
                 <div className="feature">
-                  <Link to={`/profile/${user?.user._id}`}>
+                  <Link to={`/profile/${user?._id}`}>
                     <div className="toProfile">
-                      <img src={user?.user.avatar.url} alt="" />
-                      <span>{user?.user.name}</span>
+                      <img src={user?.avatar?.url} alt="" />
+                      <span>{user?.name}</span>
                     </div>
                   </Link>
                   <div className="search">

@@ -1,6 +1,6 @@
 .chatlist {
     display: flex;
-    align-items: center;
+    align-items: start;
     padding: 10px;
     border-radius: 10px;
     margin: 0 0 20px;
@@ -30,6 +30,17 @@
 
         .online {
             background-color: #35d442;
+        }
+
+        .lastLogin {
+            position: absolute;
+            height: 12px;
+            width: max-content;
+            border-radius: 50%;
+            bottom: 10px;
+            left: 48px;
+            font-size: 12px;
+            display: flex;
         }
     }
 

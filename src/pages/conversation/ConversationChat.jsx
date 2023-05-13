@@ -3,26 +3,24 @@ import "./conversation.scss";
 import { BsCameraVideo, BsFillTelephoneXFill } from "react-icons/bs";
 import { MdKeyboardVoice } from "react-icons/md";
 import { GoDeviceDesktop } from "react-icons/go";
-import peerjs from "peerjs";
 import Peer from "peerjs";
 import { useParams } from "react-router-dom";
 import { socket } from "../../utils/socket";
 import { useSelector } from "react-redux";
-import callVideoHelpers from "./callVideoHelpers";
+import { async } from "react-input-emoji";
 
-const ConversationChat = () => {
+const ConversationChat = ({ handleOutCallVideoSend, conversationId }) => {
   const { user } = useSelector((state) => state.auth);
-  const { _id } = user.user;
-  const myStreamRef = useRef({ srcObject: "" });
-  const [myStream, setMyStream] = useState(null);
-  const remoteStreamRef = useRef({ srcObject: "" });
-  const remotePeerRef = useRef(null);
-  const { conversationId } = useParams();
+  const { _id } = user;
+  let myStreamRef = useRef({ srcObject: "" });
+  let remoteStreamRef = useRef({ srcObject: "" });
+  let remotePeerRef = useRef(null);
   const peerRef = useRef(new Peer());
   const peerIdRef = useRef("");
   const [video, setVideo] = useState(true);
   const [audio, setAudio] = useState(true);
   const peers = {};
+  let gumStream;
 
   const handleToggleVideo = () => {
     myStreamRef.current.srcObject
@@ -44,8 +42,20 @@ const ConversationChat = () => {
     setAudio(false);
   };
 
-  socket.on("user-disconnected", (userId) => {
-    if (peers[userId]) peers[userId].close();
+  const handleOutCallVideo = async () => {
+    const stream = await myStreamRef?.current?.srcObject;
+    await stream.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    socket.emit("user-disconnected send", _id, conversationId);
+    handleOutCallVideoSend();
+  };
+
+  socket.on("user-disconnected", async (userId) => {
+    await myStreamRef?.current?.srcObject.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    handleOutCallVideoSend();
   });
 
   const handleShareScreen = () => {
@@ -53,7 +63,6 @@ const ConversationChat = () => {
       .getDisplayMedia({ video: true, audio: true })
       .then((stream) => {
         myStreamRef.current.srcObject = stream;
-
         let videoTrack = myStreamRef.current.srcObject.getVideoTracks()[0];
         let audioTrack = stream.getAudioTracks()[0];
         videoTrack.onended = () => {
@@ -99,26 +108,24 @@ const ConversationChat = () => {
   };
 
   useEffect(() => {
-    if (_id) {
-      peerRef.current.on("open", function (id) {
-        peerIdRef.current = id;
-        socket.emit("subscribe-call-video", {
-          conversationId,
-          newUserId: _id,
-          peerId: id,
-        });
+    peerRef.current.on("open", function (id) {
+      peerIdRef.current = id;
+      socket.emit("subscribe-call-video", {
+        conversationId,
+        newUserId: _id,
+        peerId: id,
       });
+    });
 
-      peerRef.current.on("call", function (call) {
-        remotePeerRef.current = call;
-        let streamTempt = myStreamRef.current.srcObject;
-        call.answer(streamTempt);
-        const senderId = call.metadata.userId;
-        call.on("stream", function (remoteStream) {
-          remoteStreamRef.current.srcObject = remoteStream;
-        });
+    peerRef.current.on("call", function (call) {
+      remotePeerRef.current = call;
+      let streamTempt = myStreamRef.current.srcObject;
+      call.answer(streamTempt);
+      const senderId = call.metadata.userId;
+      call.on("stream", function (remoteStream) {
+        remoteStreamRef.current.srcObject = remoteStream;
       });
-    }
+    });
 
     navigator.mediaDevices
       .getUserMedia({
@@ -131,27 +138,36 @@ const ConversationChat = () => {
   }, []);
 
   useEffect(() => {
-    socket.on("new-user-call", ({ conversationId, newUserId, peerId }) => {
-      let streamTempt = myStreamRef.current.srcObject;
+    socket.on(
+      "new-user-call",
+      async ({ conversationId, newUserId, peerId }) => {
+        let streamTempt = await myStreamRef.current.srcObject;
 
-      const call = peerRef.current.call(peerId, streamTempt, {
-        metadata: {
-          userId: _id,
-        },
-      });
-      peers[newUserId] = call;
-      call.on("stream", function (remoteStream) {
-        remotePeerRef.current = call;
-        remoteStreamRef.current.srcObject = remoteStream;
-      });
-      call.on("close", function () {
-        video.remove();
-      });
+        const call = await peerRef.current.call(peerId, streamTempt, {
+          metadata: {
+            userId: _id,
+          },
+        });
 
-      call.on("disconnected", function () {
-        video.remove();
-      });
-    });
+        call.on("stream", function (remoteStream) {
+          remotePeerRef.current = call;
+          remoteStreamRef.current.srcObject = remoteStream;
+        });
+        call.on("close", function () {
+          const stream = myStreamRef.current.srcObject;
+          stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+        });
+
+        call.on("disconnected", function () {
+          const stream = myStreamRef.current.srcObject;
+          stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+        });
+      }
+    );
   }, []);
 
   return (
@@ -194,7 +210,7 @@ const ConversationChat = () => {
         <div className="icon" onClick={handleShareScreen}>
           <GoDeviceDesktop size={28} className="icon-call" />
         </div>
-        <div className="icon cancel">
+        <div className="icon cancel" onClick={handleOutCallVideo}>
           <BsFillTelephoneXFill size={28} className="icon-call" />
         </div>
       </footer>

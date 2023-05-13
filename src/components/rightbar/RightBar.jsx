@@ -1,27 +1,19 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import {
-  acceptFriend,
   acceptFriendInvited,
-  addFriend,
   addFriendInvited,
-  allFriend,
-  deleteInvitedFriend,
-  deleteSendFriend,
   deleteSendInvitedFriend,
-  getUserIsNotFriend,
   refusedInvitedFriend,
   unfriend,
 } from "../../features/user/userSlice";
 import "./rightbar.scss";
 import { socket } from "../../utils/socket";
+import FriendCard from "./FriendCard";
 
 const RightBar = () => {
-  const { user } = useSelector((state) => state.auth);
-  const { people, friends, sendInvite, invitedFriends } = useSelector(
-    (state) => state.user
-  );
+  const { friends } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -41,6 +33,7 @@ const RightBar = () => {
       dispatch(refusedInvitedFriend(friend));
     });
   }, []);
+
   return (
     <div className="rightbar">
       <div className="container">
@@ -124,17 +117,7 @@ const RightBar = () => {
         <div className="item">
           <span>Người liên hệ</span>
           {friends &&
-            friends.map((user) => (
-              <div className="user" key={user._id}>
-                <Link to={`/profile/${user._id}`}>
-                  <div className="userInfo">
-                    <img className="image" src={user?.avatar?.url} alt="" />
-                    <div className="online"></div>
-                    <p>{user.name}</p>
-                  </div>
-                </Link>
-              </div>
-            ))}
+            friends.map((user) => <FriendCard user={user} key={user._id} />)}
         </div>
       </div>
     </div>

@@ -1,19 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./profile.scss";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { GiCancel } from "react-icons/gi";
 import { RiUserAddFill } from "react-icons/ri";
 import Post from "../../components/post/Post";
 import CreatePost from "../../components/createpost/CreatePost";
-// import { getUserById, reset } from "../../features/user/userSlice";
-import {
-  addPost,
-  getAllPost,
-  setPosts,
-  getUserById,
-  resetProfile,
-} from "../../features/post/postSlice";
+import { getUserById } from "../../features/post/postSlice";
 import {
   acceptFriend,
   addFriend,
@@ -21,21 +14,25 @@ import {
   deleteInvitedFriend,
   deleteSendFriend,
 } from "../../features/user/userSlice";
+import UpdateUser from "../../components/updateuser/UpdateUser";
+import { toast } from "react-toastify";
+import { reset } from "../../features/auth/authSlice";
 
 const Profile = () => {
-  const { user } = useSelector((state) => state.auth);
-  const { posts, profileUser, isSuccess } = useSelector((state) => state.posts);
+  const { user, messageUpdate, isLoading } = useSelector((state) => state.auth);
+  const { posts, profileUser } = useSelector((state) => state.posts);
   const { friends, sendInvite, invitedFriends } = useSelector(
     (state) => state.user
   );
   const { userId } = useParams();
   const dispatch = useDispatch();
   const [openFollowing, setOpenFollowing] = useState(false);
+  const [updateUser, setUpdateUser] = useState(false);
   const allPosts = () => {
     const allpost = posts.filter((post) => post.author._id === userId);
     return allpost;
   };
-
+  console.log(user);
   useEffect(() => {
     if (profileUser._id !== userId) {
       dispatch(getUserById(userId));
@@ -63,13 +60,34 @@ const Profile = () => {
     return false;
   };
 
+  const handleCancelUpdateUser = () => {
+    setUpdateUser(!updateUser);
+  };
+
+  useEffect(() => {
+    if (messageUpdate) {
+      toast.success(messageUpdate);
+      dispatch(reset());
+      setUpdateUser(false);
+    }
+  }, [messageUpdate]);
+
   return (
     <div className="profile">
       <div className="container">
         <div className="info">
-          <img src={profileUser?.avatar?.url} alt="" />
+          <img
+            src={
+              profileUser?._id === user._id
+                ? user?.avatar?.url
+                : profileUser?.avatar?.url
+            }
+            alt=""
+          />
           <div className="user">
-            <span>{profileUser?.name}</span>
+            <span>
+              {profileUser?._id === user._id ? user?.name : profileUser?.name}
+            </span>
             <div className="follow">
               <div
                 className="following"
@@ -78,12 +96,14 @@ const Profile = () => {
                 {profileUser?.friends && profileUser?.friends.length} Bạn bè
               </div>
             </div>
-            {user && user?.user._id === userId ? (
+            {user && user._id === userId ? (
               <div className="update-profile">
-                <button>Update Profile</button>
+                <button onClick={() => setUpdateUser(!updateUser)}>
+                  Update Profile
+                </button>
               </div>
             ) : (
-              user.user._id !== profileUser._id &&
+              user._id !== profileUser._id &&
               (isFriend() ? (
                 <div className="add-friend">
                   <Link to={"/message"} state={profileUser}>
@@ -154,7 +174,7 @@ const Profile = () => {
           </div>
         </div>
         <div className="post-info">
-          {user && user?.user._id === userId && <CreatePost />}
+          {user && user._id === userId && <CreatePost />}
           {allPosts().map((post) => (
             <Post post={post} key={post?._id} />
           ))}
@@ -175,21 +195,37 @@ const Profile = () => {
             <div className="users">
               {profileUser?.friends.length > 0 &&
                 profileUser?.friends.map((user) => (
-                  <>
-                    <div
-                      className="info"
-                      onClick={() => setOpenFollowing(!openFollowing)}
-                      key={user._id}
-                    >
-                      <Link to={`/profile/${user._id}`}>
-                        <img src={user?.avatar.url} alt="" />
-                        <span>{user.name}</span>
-                      </Link>
-                    </div>
-                  </>
+                  <div
+                    className="info"
+                    onClick={() => setOpenFollowing(!openFollowing)}
+                    key={user._id}
+                  >
+                    <Link to={`/profile/${user._id}`}>
+                      <img src={user?.avatar.url} alt="" />
+                      <span>{user.name}</span>
+                    </Link>
+                  </div>
                 ))}
             </div>
           </div>
+        </div>
+      )}
+      {updateUser && (
+        <UpdateUser handleCancelUpdateUser={handleCancelUpdateUser} />
+      )}
+
+      {isLoading && (
+        <div className="loading">
+          <svg className="spinner" viewBox="0 0 50 50">
+            <circle
+              className="path"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              strokeWidth="5"
+            ></circle>
+          </svg>
         </div>
       )}
     </div>

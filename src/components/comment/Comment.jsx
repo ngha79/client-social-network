@@ -1,10 +1,12 @@
 import "./comment.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineSend, AiOutlineClose, AiOutlineCamera } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
 import { FaCamera, FaThumbsUp } from "react-icons/fa";
+import ReactImageGrid from "facebook-image-grid";
+
 import {
   addReplyComment,
   commentPost,
@@ -130,31 +132,33 @@ const Comment = ({ postid, comments }) => {
     <div className="comments">
       <div className="detail">
         <div className="user-comment">
-          <Link to={`/profile/${user?.user._id}`}>
-            <img src={user?.user?.avatar.url} alt="" />
+          <Link to={`/profile/${user?._id}`}>
+            <img src={user?.avatar.url} alt="" />
           </Link>
           <div className="write">
-            <div className="send-text">
+            <form onSubmit={handleAddComment}>
+              <div className="send-text">
+                <input
+                  type="text"
+                  placeholder="Write comment..."
+                  value={text}
+                  onChange={changeText}
+                />
+                <AiOutlineSend className="send" onClick={handleAddComment} />
+              </div>
               <input
-                type="text"
-                placeholder="Write comment..."
-                value={text}
-                onChange={changeText}
+                type="file"
+                className="uploadImage"
+                hidden
+                onChange={handleChange}
               />
-              <AiOutlineSend className="send" onClick={handleAddComment} />
-            </div>
-            <input
-              type="file"
-              className="uploadImage"
-              hidden
-              onChange={handleChange}
-            />
-            <div
-              className="preview"
-              onClick={() => document.querySelector(".uploadImage").click()}
-            >
-              <FaCamera className="icon-uploadimage" />
-            </div>
+              <div
+                className="preview"
+                onClick={() => document.querySelector(".uploadImage").click()}
+              >
+                <FaCamera className="icon-uploadimage" />
+              </div>
+            </form>
           </div>
         </div>
         {image && (
@@ -189,10 +193,12 @@ const Comment = ({ postid, comments }) => {
                           className="img-comment"
                         />
                       )}
-                      <FiMoreHorizontal
-                        className="feature-comment"
-                        onClick={(e) => setDeleteImage(e, comment._id)}
-                      />
+                      {comment.postedBy === user._id && (
+                        <FiMoreHorizontal
+                          className="feature-comment"
+                          onClick={(e) => setDeleteImage(e, comment._id)}
+                        />
+                      )}
                       {moreFT === comment._id && (
                         <div
                           className="delete-comment"
@@ -214,27 +220,23 @@ const Comment = ({ postid, comments }) => {
                     <div className="bottom">
                       {comment?.like &&
                       Array.from(comment?.like).some(
-                        (like) => like === user?.user._id
+                        (like) => like === user?._id
                       ) ? (
-                        <>
-                          <span
-                            className="like-comment color-text"
-                            onClick={(e) =>
-                              handleRemoveLikeComment(e, comment._id)
-                            }
-                          >
-                            Like
-                          </span>
-                        </>
+                        <span
+                          className="like-comment color-text"
+                          onClick={(e) =>
+                            handleRemoveLikeComment(e, comment._id)
+                          }
+                        >
+                          Like
+                        </span>
                       ) : (
-                        <>
-                          <span
-                            className="like-comment"
-                            onClick={(e) => handleLikeComment(e, comment._id)}
-                          >
-                            Like
-                          </span>
-                        </>
+                        <span
+                          className="like-comment"
+                          onClick={(e) => handleLikeComment(e, comment._id)}
+                        >
+                          Like
+                        </span>
                       )}
 
                       <span
@@ -250,38 +252,46 @@ const Comment = ({ postid, comments }) => {
                 {open === comment._id && (
                   <div className="reply-comments">
                     <div className="user-comment">
-                      <Link to={`/profile/${user?.user._id}`}>
-                        <img src={user?.user?.avatar.url} alt="" />
+                      <Link to={`/profile/${user?._id}`}>
+                        <img src={user?.avatar.url} alt="" />
                       </Link>
                       <div className="write">
-                        <div className="send-text">
-                          <input
-                            type="text"
-                            placeholder="Write comment..."
-                            value={reply}
-                            onChange={(e) => setReply(e.target.value)}
-                          />
-                          <AiOutlineSend
-                            className="send"
-                            onClick={(e) =>
-                              handleAddReplyComment(e, comment._id)
-                            }
-                          />
-                        </div>
-                        <input
-                          type="file"
-                          className="uploadImageReply"
-                          hidden
-                          onChange={handleChangeReply}
-                        />
-                        <div
-                          className="preview"
-                          onClick={() =>
-                            document.querySelector(".uploadImageReply").click()
+                        <form
+                          onSubmit={(e) =>
+                            handleAddReplyComment(e, comment._id)
                           }
                         >
-                          <AiOutlineCamera className="icon-uploadimage" />
-                        </div>
+                          <div className="send-text">
+                            <input
+                              type="text"
+                              placeholder="Write comment..."
+                              value={reply}
+                              onChange={(e) => setReply(e.target.value)}
+                            />
+                            <AiOutlineSend
+                              className="send"
+                              onClick={(e) =>
+                                handleAddReplyComment(e, comment._id)
+                              }
+                            />
+                          </div>
+                          <input
+                            type="file"
+                            className="uploadImageReply"
+                            hidden
+                            onChange={handleChangeReply}
+                          />
+                          <div
+                            className="preview"
+                            onClick={() =>
+                              document
+                                .querySelector(".uploadImageReply")
+                                .click()
+                            }
+                          >
+                            <FaCamera className="icon-uploadimage" />
+                          </div>
+                        </form>
                       </div>
                     </div>
                     {imageReply && (
@@ -318,8 +328,9 @@ const Comment = ({ postid, comments }) => {
                           className="feature-reply-comment"
                           onClick={(e) => setDeleteImage(e, reply?._id)}
                         />
-                        {moreFT == reply?._id && (
-                          <>
+
+                        {comment.postedBy !== user._id &&
+                          moreFT == reply?._id && (
                             <div
                               className="delete-reply-comment"
                               onClick={(e) =>
@@ -332,10 +343,9 @@ const Comment = ({ postid, comments }) => {
                             >
                               Delete
                             </div>
-                          </>
-                        )}
+                          )}
                         {Array.from(reply.like).some(
-                          (reply) => reply === user?.user._id
+                          (reply) => reply === user?._id
                         ) ? (
                           <div
                             className="like-reply color-text"

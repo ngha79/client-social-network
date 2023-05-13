@@ -5,7 +5,7 @@ const API_URI = `${process.env.REACT_APP_API_URL}/auth`;
 const login = async (userData) => {
   const response = await axiosClient.post(`${API_URI}/login`, userData);
   if (response.data) {
-    localStorage.setItem("user", JSON.stringify(response.data));
+    localStorage.setItem("user", JSON.stringify(response.data.user));
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("refreshtoken", response.data.refreshToken);
   }
@@ -47,12 +47,26 @@ const resetPassword = async ({ data, token }) => {
   );
   return response.data;
 };
+
+const updateUser = async (data) => {
+  const response = await axiosClient.request({
+    method: "PUT",
+    url: `${process.env.REACT_APP_API_URL}/user/update-user-info`,
+    data,
+  });
+  if (response.data.user) {
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+  }
+  return response.data;
+};
+
 const authService = {
   login,
   register,
   logout,
   forgotPassword,
   resetPassword,
+  updateUser,
 };
 
 export default authService;

@@ -1,18 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import "./createpost.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaTimesCircle, FaCloudUploadAlt } from "react-icons/fa";
-import { createPost, reset } from "../../features/post/postSlice";
-import { toast } from "react-toastify";
+import { createPost } from "../../features/post/postSlice";
 
 const CreatePost = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const { posts, isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.posts
-  );
   const [openCreatePost, setOpenCreatePost] = useState(false);
   const [post, setPost] = useState("");
   const [file, setFile] = useState([]);
@@ -72,8 +67,8 @@ const CreatePost = () => {
       <div className="createpost">
         <div className="container">
           <div className="user">
-            <Link to={`/profile/${user?.user._id}`}>
-              <img src={user?.user.avatar.url} alt="" />
+            <Link to={`/profile/${user?._id}`}>
+              <img src={user?.avatar?.url} alt="" />
             </Link>
             <input
               type="text"
@@ -93,8 +88,8 @@ const CreatePost = () => {
                 />
               </div>
               <div className="user">
-                <img src={user?.user.avatar.url} alt="" />
-                <span>{user?.user.name}</span>
+                <img src={user?.avatar?.url} alt="" />
+                <span>{user?.name}</span>
               </div>
               <div className="content">
                 <input

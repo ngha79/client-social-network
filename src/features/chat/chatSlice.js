@@ -20,6 +20,8 @@ const initialState = {
   passLeader: {},
   memberKick: "",
   memberAdd: "",
+  isGetChat: false,
+  callVideo: false,
 };
 
 export const getAllChat = createAsyncThunk(
@@ -352,11 +354,15 @@ export const chatSlice = createSlice({
     addGroup: (state, action) => {
       state.chat.push(action.payload);
     },
+    callVideoChat: (state, action) => {
+      state.callVideo = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllChat.fulfilled, (state, action) => {
         state.chat = action.payload;
+        state.isGetChat = true;
         socket.emit("join chats", action.payload);
       })
       .addCase(createChat.fulfilled, (state, action) => {
@@ -509,6 +515,7 @@ export const {
   exitChatCurrent,
   updateChatAfterAddMember,
   addGroup,
+  callVideoChat,
 } = chatSlice.actions;
 export const allMessages = (state) => state.chat.messages;
 export default chatSlice.reducer;

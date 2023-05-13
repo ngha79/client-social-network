@@ -10,6 +10,7 @@ const initialState = {
   isSuccess: false,
   isError: false,
   message: "",
+  messageUpdate: "",
 };
 
 export const register = createAsyncThunk(
@@ -84,6 +85,23 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (data, thunkAPI) => {
+    try {
+      return await authService.updateUser(data);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -93,6 +111,7 @@ export const authSlice = createSlice({
       state.isError = false;
       state.isSuccess = false;
       state.message = "";
+      state.messageUpdate = "";
     },
   },
   extraReducers: (builder) => {
@@ -102,11 +121,9 @@ export const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isSuccess = true;
-        socket.on("connect", () => {
-          socket.emit("set user", user);
-        });
+        socket.emit("set user", action.payload?.user?._id);
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -152,6 +169,14 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(updateUser.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.messageUpdate = action.payload.message;
       });
   },
 });
