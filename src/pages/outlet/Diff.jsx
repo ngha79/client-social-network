@@ -143,6 +143,7 @@ const Diff = () => {
       dispatch(addGroup(group));
       const audio = new Audio(noti);
       audio.play();
+      socket.emit("join chat", group._id);
     });
   }, []);
 
