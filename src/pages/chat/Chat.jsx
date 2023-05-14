@@ -196,7 +196,6 @@ const Chat = () => {
                     </div>
                   ))}
               </div>
-              <CallVideo />
             </div>
             {/* <div className="rightChat">
           {Object.keys(memberChat).length !== 0 ? (
