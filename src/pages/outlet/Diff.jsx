@@ -180,7 +180,6 @@ const Diff = () => {
       <Outlet />
       {callVideoReceiver && (
         <>
-          {console.log(callVideoReceiver)}
           <CallVideo
             handleSetVideoCallReceiver={handleSetVideoReceiver}
             handleCallVideo={handleCallVideo}

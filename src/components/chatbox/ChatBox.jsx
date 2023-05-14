@@ -50,8 +50,6 @@ import {
 } from "../../features/chat/chatSlice";
 import { socket } from "../../utils/socket";
 import { Link, useLocation } from "react-router-dom";
-import noti from "../../assets/callvideosound.mp3";
-import { NotificationSound } from "../notification/Notification";
 
 const ChatBox = ({
   chat,
@@ -61,22 +59,7 @@ const ChatBox = ({
   isMobile,
   setChatMobile,
 }) => {
-  const {
-    messages,
-    messageAction,
-    messageDel,
-    messageLike,
-    messageUnLike,
-    updateChatCurrent,
-    messageNewChat,
-    addMember,
-    deleteOrDropChat,
-    kickMember,
-    exitChat,
-    passLeader,
-    memberKick,
-    memberAdd,
-  } = useSelector((state) => state.chat);
+  const { messages, messageNewChat } = useSelector((state) => state.chat);
   const { friends } = useSelector((state) => state.user);
   const [newMessage, setNewMessage] = useState("");
   const [delMessage, setDelMessage] = useState(null);
@@ -86,11 +69,9 @@ const ChatBox = ({
   const [userChat, setUserChat] = useState([]);
   const [image, setImage] = useState([]);
   const [file, setFile] = useState();
-  const [callVideoSend, setCallVideoSend] = useState(false);
-  const [callVideoReceiver, setCallVideoReceiver] = useState(false);
   const dispatch = useDispatch();
   const imageRef = useRef();
-  const scroll = useRef();
+  const scroll = useRef(null);
   const textareaInput = useRef(null);
 
   const handleAddImage = (e) => {
@@ -317,7 +298,6 @@ const ChatBox = ({
                         </div>
                       )}
                       <div
-                        ref={scroll}
                         className={
                           mess?.senderId._id === user._id
                             ? "message own"
@@ -389,6 +369,7 @@ const ChatBox = ({
                     </div>
                   ))}
               </div>
+              <div ref={scroll}></div>
             </div>
             <div className="chatSender">
               {file && (
@@ -576,7 +557,6 @@ const ChatBox = ({
                       </div>
                     )}
                     <div
-                      ref={scroll}
                       className={
                         mess?.senderId._id === user._id
                           ? "message own"
@@ -649,6 +629,7 @@ const ChatBox = ({
                     </div>
                   </div>
                 ))}
+              <div ref={scroll}></div>
             </div>
             <div className="chatSender">
               {file && (

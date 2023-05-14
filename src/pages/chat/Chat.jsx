@@ -162,7 +162,6 @@ const Chat = () => {
                 />
               )}
             </div>
-            <CallVideo />
           </div>
         ) : (
           <div className="chat">
