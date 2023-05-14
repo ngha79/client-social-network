@@ -61,7 +61,6 @@ const Diff = () => {
 
   const dispatch = useDispatch();
 
-  const [callVideoSend, setCallVideoSend] = useState(false);
   const [isCallVideo, setIsCallVideo] = useState(false);
   const [callVideoReceiver, setCallVideoReceiver] = useState(false);
   const [chatCallVideo, setChatCallVideo] = useState("");
@@ -117,7 +116,6 @@ const Diff = () => {
       audio.play();
     });
     socket.on("passLeaderSend", (chat) => {
-      console.log(chat);
       dispatch(updateChatSend(chat.updateChat));
       const audio = new Audio(noti);
       audio.play();
@@ -192,7 +190,6 @@ const Diff = () => {
       )}
       {callVideo && (
         <>
-          {console.log(callVideo)}
           <CallVideoSend chatId={chatCallVideo} />
           <video loop autoPlay style={{ display: "none" }} id="videomain">
             <source src={soundcall} type="video/mp4" />
