@@ -39,7 +39,6 @@ function App() {
       });
     }
   }, []);
-  console.log(user);
   const ProtectedRoute = ({ children }) => {
     if (!user?._id) {
       return <Navigate to={"/login"} />;

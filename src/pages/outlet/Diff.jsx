@@ -15,6 +15,11 @@ import {
   allSendFriend,
   allInviteFriend,
   getUserIsNotFriend,
+  addFriendInvited,
+  unfriend,
+  acceptFriendInvited,
+  deleteSendInvitedFriend,
+  refusedInvitedFriend,
 } from "../../features/user/userSlice";
 import {
   createMessage,
@@ -123,6 +128,7 @@ const Diff = () => {
     socket.on("addMemberSend", (chat) => {
       if (chat.memberId.some((member) => member === user._id.toString())) {
         dispatch(updateChatAfterAddMember(chat.updateChat));
+        socket.emit("join chat", chat._id);
       } else {
         dispatch(updateAddMember(chat.updateChat));
       }
@@ -142,6 +148,26 @@ const Diff = () => {
       const audio = new Audio(noti);
       audio.play();
       socket.emit("join chat", group._id);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on("add friend invited", (friend) => {
+      dispatch(addFriendInvited(friend));
+      toast.success("Bạn có lời mời kết bạn mới!");
+    });
+    socket.on("send unfriend invited", (friend) => {
+      dispatch(unfriend(friend));
+    });
+    socket.on("accept invited friend", (friend) => {
+      dispatch(acceptFriendInvited(friend));
+      toast.success(`${friend.name} đã chấp nhận lời mời kết bạn.`);
+    });
+    socket.on("delete send invited friend", (friend) => {
+      dispatch(deleteSendInvitedFriend(friend));
+    });
+    socket.on("delete refused invited friend", (friend) => {
+      dispatch(refusedInvitedFriend(friend));
     });
   }, []);
 

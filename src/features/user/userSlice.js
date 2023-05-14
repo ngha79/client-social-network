@@ -318,14 +318,6 @@ export const userSlice = createSlice({
         state.sendInvite = action.payload;
       })
       .addCase(getInvitedFriend.fulfilled, (state, action) => {
-        const friends = action.payload.map((friend) => {
-          console.log(
-            state.invitedFriends.some((user) => user._id === friend._id)
-          );
-          // if (!state.invitedFriends.some((user) => user._id === friend._id)) {
-          //   state.invitedFriends.push(friend);
-          // }
-        });
         state.invitedFriends.push(...action.payload);
       })
       .addCase(getSendFriend.fulfilled, (state, action) => {

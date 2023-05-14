@@ -108,24 +108,25 @@ const ConversationChat = ({ handleOutCallVideoSend, conversationId }) => {
   };
 
   useEffect(() => {
-    peerRef.current.on("open", function (id) {
-      peerIdRef.current = id;
-      socket.emit("subscribe-call-video", {
-        conversationId,
-        newUserId: _id,
-        peerId: id,
+    if (conversationId) {
+      peerRef.current.on("open", function (id) {
+        peerIdRef.current = id;
+        socket.emit("subscribe-call-video", {
+          conversationId,
+          newUserId: _id,
+          peerId: id,
+        });
       });
-    });
 
-    peerRef.current.on("call", function (call) {
-      remotePeerRef.current = call;
-      let streamTempt = myStreamRef.current.srcObject;
-      call.answer(streamTempt);
-      const senderId = call.metadata.userId;
-      call.on("stream", function (remoteStream) {
-        remoteStreamRef.current.srcObject = remoteStream;
+      peerRef.current.on("call", function (call) {
+        remotePeerRef.current = call;
+        let streamTempt = myStreamRef.current.srcObject;
+        call.answer(streamTempt);
+        call.on("stream", function (remoteStream) {
+          remoteStreamRef.current.srcObject = remoteStream;
+        });
       });
-    });
+    }
 
     navigator.mediaDevices
       .getUserMedia({
@@ -190,28 +191,28 @@ const ConversationChat = ({ handleOutCallVideoSend, conversationId }) => {
       <footer className="footer-conversation">
         {video ? (
           <div className="icon" onClick={handleToggleVideo}>
-            <BsCameraVideo size={28} className="icon-call" />
+            <BsCameraVideo size={24} className="icon-call" />
           </div>
         ) : (
           <div className="icon cancel" onClick={handleToggleVideo}>
-            <BsCameraVideo size={28} className="icon-call" />
+            <BsCameraVideo size={24} className="icon-call" />
           </div>
         )}
 
         {audio ? (
           <div className="icon" onClick={handleToggleAudioOff}>
-            <MdKeyboardVoice size={28} className="icon-call" />
+            <MdKeyboardVoice size={24} className="icon-call" />
           </div>
         ) : (
           <div className="icon cancel" onClick={handleToggleAudioOn}>
-            <MdKeyboardVoice size={28} className="icon-call" />
+            <MdKeyboardVoice size={24} className="icon-call" />
           </div>
         )}
         <div className="icon" onClick={handleShareScreen}>
-          <GoDeviceDesktop size={28} className="icon-call" />
+          <GoDeviceDesktop size={24} className="icon-call" />
         </div>
         <div className="icon cancel" onClick={handleOutCallVideo}>
-          <BsFillTelephoneXFill size={28} className="icon-call" />
+          <BsFillTelephoneXFill size={24} className="icon-call" />
         </div>
       </footer>
     </div>

@@ -20,6 +20,7 @@ const initialState = {
   passLeader: {},
   memberKick: "",
   memberAdd: "",
+  currentChatId: "",
   isGetChat: false,
   callVideo: false,
 };
@@ -257,12 +258,18 @@ export const chatSlice = createSlice({
     updateChat: (state) => {
       state.updateChatCurrent = {};
     },
+    setCurrentChatId: (state, action) => {
+      state.currentChatId = action.payload;
+    },
     receiverMessage: (state, action) => {
-      const allMessages = state.messages.some(
-        (message) => message._id === action.payload._id
-      );
-      if (!allMessages) {
-        state.messages.push(action.payload);
+      const chatId = state.currentChatId;
+      if (action.payload.chat === chatId) {
+        const allMessages = state.messages.some(
+          (message) => message._id === action.payload._id
+        );
+        if (!allMessages) {
+          state.messages.push(action.payload);
+        }
       }
     },
     messageDelete: (state, action) => {
@@ -400,6 +407,10 @@ export const chatSlice = createSlice({
         });
         state.messages = update;
         state.messageDel = action.payload;
+        socket.emit("delMessage", {
+          msg: action.payload,
+          chatId: action.payload.chat,
+        });
       })
       .addCase(likeMessage.fulfilled, (state, action) => {
         const update = state.messages.map((message) => {
@@ -436,7 +447,6 @@ export const chatSlice = createSlice({
         });
         state.chat = update;
         state.updateChatCurrent = action.payload.chat;
-        console.log(action.payload);
         socket.emit("kickMember", {
           msg: action.payload.chat,
           chatId: action.payload.chat._id,
@@ -500,6 +510,7 @@ export const chatSlice = createSlice({
 export const {
   reset,
   allChat,
+  setCurrentChatId,
   resetMemberChat,
   resetNewChat,
   updateAddMember,

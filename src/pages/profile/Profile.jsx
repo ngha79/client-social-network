@@ -32,7 +32,6 @@ const Profile = () => {
     const allpost = posts.filter((post) => post.author._id === userId);
     return allpost;
   };
-  console.log(user);
   useEffect(() => {
     if (profileUser._id !== userId) {
       dispatch(getUserById(userId));

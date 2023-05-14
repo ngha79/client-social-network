@@ -10,29 +10,12 @@ import {
 import "./rightbar.scss";
 import { socket } from "../../utils/socket";
 import FriendCard from "./FriendCard";
+import { toast } from "react-toastify";
 
 const RightBar = () => {
   const { friends } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    socket.on("add friend invited", (friend) => {
-      dispatch(addFriendInvited(friend));
-    });
-    socket.on("send unfriend invited", (friend) => {
-      dispatch(unfriend(friend));
-    });
-    socket.on("accept invited friend", (friend) => {
-      dispatch(acceptFriendInvited(friend));
-    });
-    socket.on("delete send invited friend", (friend) => {
-      dispatch(deleteSendInvitedFriend(friend));
-    });
-    socket.on("delete refused invited friend", (friend) => {
-      dispatch(refusedInvitedFriend(friend));
-    });
-  }, []);
 
   return (
     <div className="rightbar">

@@ -12,6 +12,7 @@ import {
   getChatByMember,
   getMessages,
   resetMemberChat,
+  setCurrentChatId,
   updateChat,
 } from "../../features/chat/chatSlice";
 import { toast } from "react-toastify";
@@ -77,6 +78,7 @@ const Chat = () => {
     e.preventDefault();
     location.state = {};
     setCurrentChat(chatmess);
+    dispatch(setCurrentChatId(chatmess._id));
     dispatch(updateChat());
     dispatch(resetMemberChat());
     dispatch(getMessages(chatmess._id));

@@ -11,7 +11,6 @@ import { useSelector } from "react-redux";
 
 const LeftBar = () => {
   const { user } = useSelector((state) => state.auth);
-  console.log(user);
   return (
     <div className="leftbar">
       <div className="container">

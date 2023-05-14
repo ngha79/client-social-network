@@ -148,6 +148,7 @@ const ChatBox = ({
       if (chat.memberId === user._id.toString()) {
         dispatch(updateChatAfterKick(chat.updateChat));
         setCurrentChat();
+        socket.emit("leave room", chat._id);
       } else {
         dispatch(updateKickUserAndDropGroup(chat.updateChat));
       }
